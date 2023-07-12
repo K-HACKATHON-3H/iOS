@@ -19,6 +19,11 @@
 		4B72EA442A5DAB790077C728 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4B72EA432A5DAB790077C728 /* RxSwift */; };
 		4B72EA472A5DAB890077C728 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4B72EA462A5DAB890077C728 /* SnapKit */; };
 		4B72EA4C2A5DAE0C0077C728 /* LayoutSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B72EA4B2A5DAE0C0077C728 /* LayoutSupport.swift */; };
+		4B7475C92A5F0A24005F9412 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475C82A5F0A24005F9412 /* TabBarController.swift */; };
+		4B7475CC2A5F1A8D005F9412 /* DistanceRankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475CB2A5F1A8D005F9412 /* DistanceRankingViewController.swift */; };
+		4B7475CF2A5F1C2C005F9412 /* QRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475CE2A5F1C2C005F9412 /* QRCodeViewController.swift */; };
+		4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475D12A5F1C74005F9412 /* AlertViewController.swift */; };
+		4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +57,11 @@
 		4B72EA312A5DAB600077C728 /* Trash_Where_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trash_Where_iOSUITests.swift; sourceTree = "<group>"; };
 		4B72EA332A5DAB600077C728 /* Trash_Where_iOSUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trash_Where_iOSUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4B72EA4B2A5DAE0C0077C728 /* LayoutSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutSupport.swift; sourceTree = "<group>"; };
+		4B7475C82A5F0A24005F9412 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		4B7475CB2A5F1A8D005F9412 /* DistanceRankingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceRankingViewController.swift; sourceTree = "<group>"; };
+		4B7475CE2A5F1C2C005F9412 /* QRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
+		4B7475D12A5F1C74005F9412 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
+		4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +147,7 @@
 				4B72EA192A5DAB600077C728 /* Assets.xcassets */,
 				4B72EA1B2A5DAB600077C728 /* LaunchScreen.storyboard */,
 				4B72EA1E2A5DAB600077C728 /* Info.plist */,
+				4B7475C82A5F0A24005F9412 /* TabBarController.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -144,7 +155,11 @@
 		4B72EA492A5DAD7F0077C728 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				4B72EA142A5DAB5F0077C728 /* MapViewController.swift */,
+				4B7475C72A5F09D0005F9412 /* Map */,
+				4B7475CA2A5F1A2D005F9412 /* DistanceRanking */,
+				4B7475CD2A5F1BFB005F9412 /* QRCode */,
+				4B7475D02A5F1C49005F9412 /* Alert */,
+				4B7475D32A5F1CAE005F9412 /* Profile */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -155,6 +170,46 @@
 				4B72EA4B2A5DAE0C0077C728 /* LayoutSupport.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		4B7475C72A5F09D0005F9412 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				4B72EA142A5DAB5F0077C728 /* MapViewController.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		4B7475CA2A5F1A2D005F9412 /* DistanceRanking */ = {
+			isa = PBXGroup;
+			children = (
+				4B7475CB2A5F1A8D005F9412 /* DistanceRankingViewController.swift */,
+			);
+			path = DistanceRanking;
+			sourceTree = "<group>";
+		};
+		4B7475CD2A5F1BFB005F9412 /* QRCode */ = {
+			isa = PBXGroup;
+			children = (
+				4B7475CE2A5F1C2C005F9412 /* QRCodeViewController.swift */,
+			);
+			path = QRCode;
+			sourceTree = "<group>";
+		};
+		4B7475D02A5F1C49005F9412 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				4B7475D12A5F1C74005F9412 /* AlertViewController.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
+		4B7475D32A5F1CAE005F9412 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,8 +352,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B72EA152A5DAB5F0077C728 /* MapViewController.swift in Sources */,
+				4B7475CC2A5F1A8D005F9412 /* DistanceRankingViewController.swift in Sources */,
 				4B72EA4C2A5DAE0C0077C728 /* LayoutSupport.swift in Sources */,
+				4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */,
 				4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */,
+				4B7475C92A5F0A24005F9412 /* TabBarController.swift in Sources */,
+				4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */,
+				4B7475CF2A5F1C2C005F9412 /* QRCodeViewController.swift in Sources */,
 				4B72EA132A5DAB5F0077C728 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
