@@ -17,6 +17,9 @@ class MapViewController: UIViewController {
   
   var mapView: MKMapView!
   var locationManager = CLLocationManager()
+  var userLocationButton = UIButton()
+  
+  // MARK: - LifeCycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -25,7 +28,23 @@ class MapViewController: UIViewController {
     configureSubviews()
   }
 
-
+// MARK: - Action
+  
+  
+  
+// MARK: - UISetting
+  
+  func setupUserLocationButton() {
+    userLocationButton.setImage(UIImage(named: "GPSemoji"), for: .normal)
+    userLocationButton.backgroundColor = .white
+    userLocationButton.layer.cornerRadius = 20
+    userLocationButton.imageEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    userLocationButton.layer.shadowColor = UIColor.black.cgColor
+    userLocationButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+    userLocationButton.layer.shadowOpacity = 0.5
+    userLocationButton.layer.shadowRadius = 3
+  }
+  
 }
 
 // MARK: - MKMapViewDelegate
@@ -47,6 +66,7 @@ extension MapViewController: MKMapViewDelegate {
 }
 
 // MARK: - CLLocationManagerDelegate
+// TODO: 추후 CoreLocation Feature 나눠야됨
 
 extension MapViewController: CLLocationManagerDelegate {
   
@@ -71,11 +91,13 @@ extension MapViewController: LayoutSupport {
   
   func addSubviews() {
     self.view.addSubview(mapView)
+    
+    mapView.addSubview(userLocationButton)
   }
   
   func setupLayouts() {
     setupSubviewsLayouts()
-    //setupSubviewsConstraints()
+    setupSubviewsConstraints()
   }
   
 }
@@ -85,14 +107,20 @@ extension MapViewController: SetupSubviewsLayouts {
   func setupSubviewsLayouts() {
     setupMapView()
     setupCLLocationManager()
+    setupUserLocationButton()
   }
   
 }
 
-//extension MapViewController: SetupSubviewsConstraints {
-//
-//  func setupSubviewsConstraints() {
-//    <#code#>
-//  }
-//
-//}
+extension MapViewController: SetupSubviewsConstraints {
+
+  func setupSubviewsConstraints() {
+    userLocationButton.snp.makeConstraints {
+      $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(17)
+      $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(35)
+      $0.height.equalTo(40)
+      $0.width.equalTo(40)
+    }
+  }
+
+}
