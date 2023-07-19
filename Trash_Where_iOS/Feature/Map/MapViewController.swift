@@ -22,15 +22,15 @@ class MapViewController: UIViewController{
   let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
   
   // Feature Properties
-//  lazy var center = mapView.centerCoordinate
-//  lazy var span = mapView.region.span
-//
-//  let maxLatitude: CLLocationDegrees = 42.0
-//  let minLatitude: CLLocationDegrees = 29.0
-//  let maxLongitude: CLLocationDegrees = 130.0
-//  let minLongitude: CLLocationDegrees = 125.0
-//
-//  lazy var newCenter = center
+  lazy var center = mapView.centerCoordinate
+  lazy var span = mapView.region.span
+
+  let maxLatitude: CLLocationDegrees = 42.0
+  let minLatitude: CLLocationDegrees = 29.0
+  let maxLongitude: CLLocationDegrees = 130.0
+  let minLongitude: CLLocationDegrees = 125.0
+
+  lazy var newCenter = center
   
   // MARK: - LifeCycle
   
@@ -72,31 +72,16 @@ extension MapViewController: MKMapViewDelegate {
   
   // 척도 범위 설정
   func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    // scale of map
     let center = mapView.userLocation.coordinate
     let zoomLevel = log2(360 * ((Double(mapView.frame.size.width/256)) / mapView.region.span.longitudeDelta))
-    if zoomLevel < 10 {
-      let span = MKCoordinateSpan(latitudeDelta: 0, longitudeDelta: 360/pow(2, 10)*Double(mapView.frame.size.width/256))
-      let region = MKCoordinateRegion(center: center, span: span)
+    
+    if zoomLevel < 8 {
+      let limitSpan = MKCoordinateSpan(latitudeDelta: 1.40625, longitudeDelta: 1.40625)
+      let region = MKCoordinateRegion(center: center, span: limitSpan)
       mapView.setRegion(region, animated: true)
     }
   }
-  
-  // 지도의 범위
-//  if center.latitude > maxLatitude {
-//    newCenter.latitude = maxLatitude - span.latitudeDelta / 2
-//  } else if center.latitude < minLatitude {
-//    newCenter.latitude = minLatitude + span.latitudeDelta / 2
-//  }
-//
-//  if center.longitude > maxLongitude {
-//    newCenter.longitude = maxLongitude - span.longitudeDelta / 2
-//  } else if center.longitude < minLongitude {
-//    newCenter.longitude = minLongitude + span.longitudeDelta / 2
-//  }
-//
-//  if newCenter.latitude != center.latitude || newCenter.longitude != center.longitude {
-//    mapView.setRegion(MKCoordinateRegion(center: newCenter, span: span), animated: true)
-//  }
 }
 
 // MARK: - CLLocationManagerDelegate
