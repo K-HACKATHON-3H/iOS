@@ -40,14 +40,18 @@ class MapViewController: UIViewController{
     
     configureSubviews()
   }
-  
 
 // MARK: - Action
   
- 
+  @objc func setMapRegion() {
+    let region = MKCoordinateRegion(center: mapView.userLocation.coordinate,
+                                    latitudinalMeters: 450, longitudinalMeters: 450)
+    mapView.setRegion(region, animated: true)
+  }
   
 // MARK: - UISetting
   
+  // TODO: 버튼 클릭시 색상변경
   func setupUserLocationButton() {
     userLocationButton.backgroundColor = .white
     userLocationButton.layer.cornerRadius = 20
@@ -55,6 +59,7 @@ class MapViewController: UIViewController{
     userLocationButton.layer.shadowOffset = CGSize(width: 0, height: 2)
     userLocationButton.layer.shadowOpacity = 0.5
     userLocationButton.layer.shadowRadius = 3
+    userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
   }
   
 }
@@ -74,7 +79,9 @@ extension MapViewController: MKMapViewDelegate {
   func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
     // scale of map
     let center = mapView.userLocation.coordinate
-    let zoomLevel = log2(360 * ((Double(mapView.frame.size.width/256)) / mapView.region.span.longitudeDelta))
+    let zoomLevel = log2(360 *
+                         (Double(mapView.frame.size.width/256) /
+                          mapView.region.span.longitudeDelta))
     
     if zoomLevel < 8 {
       let limitSpan = MKCoordinateSpan(latitudeDelta: 1.40625, longitudeDelta: 1.40625)
@@ -82,6 +89,23 @@ extension MapViewController: MKMapViewDelegate {
       mapView.setRegion(region, animated: true)
     }
   }
+  
+  // 사용자 현재위치의 view setting
+  func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    if annotation is MKUserLocation {
+      let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
+      annotationView.image = UIImage(named: "userLocationIcon")
+      annotationView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.63)
+      annotationView.layer.shadowColor = UIColor.systemBlue.cgColor
+      annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
+      annotationView.layer.shadowOpacity = 0.5
+      annotationView.layer.shadowRadius = 5
+      // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
+      return annotationView
+    }
+    return nil
+  }
+  
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -96,16 +120,26 @@ extension MapViewController: CLLocationManagerDelegate {
     locationManager.desiredAccuracy = kCLLocationAccuracyBest
     locationManager.distanceFilter = kCLDistanceFilterNone
     locationManager.startUpdatingLocation()
+    locationManager.startUpdatingHeading()
   }
   
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     guard let location = locations.last else { return }
     
-    let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+    let region = MKCoordinateRegion(center: location.coordinate,
+                                    latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
     
     // 위치 업데이트 종료
     locationManager.stopUpdatingLocation()
+  }
+  
+  // 사용자의 방향에따라 annotaion의 방향을 변경
+  func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    let rotationAngle = (newHeading.trueHeading * Double.pi) / 180.0
+    if let annotationView = mapView.view(for: mapView.userLocation) {
+      annotationView.transform = CGAffineTransform(rotationAngle: rotationAngle)
+    }
   }
   
 }
@@ -120,7 +154,6 @@ extension MapViewController: LayoutSupport {
   
   func addSubviews() {
     self.view.addSubview(mapView)
-    
     mapView.addSubview(userLocationButton)
     
     userLocationButton.addSubview(userLocationButtonImageView)
