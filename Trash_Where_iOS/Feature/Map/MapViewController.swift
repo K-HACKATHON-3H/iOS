@@ -22,15 +22,6 @@ class MapViewController: UIViewController{
   let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
   
   // Feature Properties
-  lazy var center = mapView.centerCoordinate
-  lazy var span = mapView.region.span
-
-  let maxLatitude: CLLocationDegrees = 42.0
-  let minLatitude: CLLocationDegrees = 29.0
-  let maxLongitude: CLLocationDegrees = 130.0
-  let minLongitude: CLLocationDegrees = 125.0
-
-  lazy var newCenter = center
   
   // MARK: - LifeCycle
   
@@ -39,8 +30,16 @@ class MapViewController: UIViewController{
     mapView = MKMapView(frame: view.frame)
     
     configureSubviews()
+    
+    // TODO: 서버 API와 연결
+    addTrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: 36.3167, longitude: 127.4435))
   }
-
+  
+  func addTrashAnnotation(imageType: Int, coordinate: CLLocationCoordinate2D) {
+    let annotation = TrashAnnotation(imageType: imageType, coordinate: coordinate)
+    mapView.addAnnotation(annotation)
+  }
+  
 // MARK: - Action
   
   @objc func setMapRegion() {
@@ -90,8 +89,9 @@ extension MapViewController: MKMapViewDelegate {
     }
   }
   
-  // 사용자 현재위치의 view setting
   func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    
+    // 사용자 현재위치의 view setting
     if annotation is MKUserLocation {
       let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
       annotationView.image = UIImage(named: "userLocationIcon")
@@ -103,7 +103,39 @@ extension MapViewController: MKMapViewDelegate {
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
-    return nil
+    
+    guard let annotation = annotation as? TrashAnnotation else {
+      return nil
+    }
+    
+    var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier:
+                                                                TrashAnnotationView.identifier)
+    
+    if annotationView == nil {
+      annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier:
+                                          TrashAnnotationView.identifier)
+      annotationView?.canShowCallout = false
+      annotationView?.contentMode = .scaleAspectFit
+    } else {
+      annotationView?.annotation = annotation
+    }
+    
+    let annotationImage: UIImage!
+    let size = CGSize(width: 65, height: 69)
+    UIGraphicsBeginImageContext(size)
+    
+    // TODO: 추가되는 서비스를 대비한 logic
+    switch annotation.imageType {
+    case 0:
+      annotationImage = UIImage(named: "TestPin")
+    default:
+      annotationImage = UIImage(systemName: "trash.circle")
+    }
+    annotationImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+    let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+    annotationView?.image = resizedImage
+    
+    return annotationView
   }
   
 }
