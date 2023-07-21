@@ -25,6 +25,8 @@
 		4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475D12A5F1C74005F9412 /* AlertViewController.swift */; };
 		4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */; };
 		4BFE62D82A693803003E5E31 /* TrashAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */; };
+		4BFE62DA2A695509003E5E31 /* TrashDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE62D92A695509003E5E31 /* TrashDetailViewController.swift */; };
+		4BFE62F32A6AE578003E5E31 /* PassThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,8 @@
 		4B7475D12A5F1C74005F9412 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashAnnotationView.swift; sourceTree = "<group>"; };
+		4BFE62D92A695509003E5E31 /* TrashDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashDetailViewController.swift; sourceTree = "<group>"; };
+		4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,7 +182,9 @@
 			isa = PBXGroup;
 			children = (
 				4B72EA142A5DAB5F0077C728 /* MapViewController.swift */,
+				4BFE62D92A695509003E5E31 /* TrashDetailViewController.swift */,
 				4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */,
+				4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -357,12 +363,14 @@
 				4B72EA152A5DAB5F0077C728 /* MapViewController.swift in Sources */,
 				4B7475CC2A5F1A8D005F9412 /* DistanceRankingViewController.swift in Sources */,
 				4B72EA4C2A5DAE0C0077C728 /* LayoutSupport.swift in Sources */,
+				4BFE62F32A6AE578003E5E31 /* PassThroughView.swift in Sources */,
 				4BFE62D82A693803003E5E31 /* TrashAnnotationView.swift in Sources */,
 				4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */,
 				4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */,
 				4B7475C92A5F0A24005F9412 /* TabBarController.swift in Sources */,
 				4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */,
 				4B7475CF2A5F1C2C005F9412 /* QRCodeViewController.swift in Sources */,
+				4BFE62DA2A695509003E5E31 /* TrashDetailViewController.swift in Sources */,
 				4B72EA132A5DAB5F0077C728 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

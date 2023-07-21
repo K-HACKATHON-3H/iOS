@@ -20,6 +20,12 @@ class MapViewController: UIViewController{
   var locationManager = CLLocationManager()
   var userLocationButton = UIButton()
   let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
+  let bottomSheetView: BottomSheetView = {
+    let bottomSheetView = BottomSheetView()
+    bottomSheetView.bottomSheetColor = .lightGray
+    bottomSheetView.barViewColor = .darkGray
+    return bottomSheetView
+  }()
   
   // Feature Properties
   
@@ -30,6 +36,7 @@ class MapViewController: UIViewController{
     mapView = MKMapView(frame: view.frame)
     
     configureSubviews()
+    self.view.clipsToBounds = true
     
     // TODO: 서버 API와 연결
     addTrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: 36.3167, longitude: 127.4435))
@@ -71,7 +78,6 @@ extension MapViewController: MKMapViewDelegate {
   func setupMapView() {
     mapView.delegate = self
     mapView.showsUserLocation = true // 사용자 위치
-    
   }
   
   // 척도 범위 설정
@@ -138,6 +144,10 @@ extension MapViewController: MKMapViewDelegate {
     return annotationView
   }
   
+  func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+    // TODO: Trash에 대한 상세 정보
+  }
+  
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -160,7 +170,7 @@ extension MapViewController: CLLocationManagerDelegate {
     
     let region = MKCoordinateRegion(center: location.coordinate,
                                     latitudinalMeters: 450, longitudinalMeters: 450)
-    mapView.setRegion(region, animated: true)
+    mapView.setRegion(region, animated: false)
     
     // 위치 업데이트 종료
     locationManager.stopUpdatingLocation()
@@ -188,6 +198,8 @@ extension MapViewController: LayoutSupport {
     self.view.addSubview(mapView)
     mapView.addSubview(userLocationButton)
     
+    self.view.addSubview(self.bottomSheetView)
+    
     userLocationButton.addSubview(userLocationButtonImageView)
   }
   
@@ -211,13 +223,13 @@ extension MapViewController: SetupSubviewsLayouts {
 }
 
 extension MapViewController: SetupSubviewsConstraints {
-
+  
   func setupSubviewsConstraints() {
     userLocationButton.snp.makeConstraints {
       $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(17)
-      $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(35)
-      $0.height.equalTo(40)
-      $0.width.equalTo(40)
+      $0.bottom.equalTo(bottomSheetView.bottomSheetView.snp.top).inset(-25)
+      $0.height.width.equalTo(40)
+      //$0.width.equalTo(40)
     }
     
     userLocationButtonImageView.snp.makeConstraints {
@@ -226,6 +238,10 @@ extension MapViewController: SetupSubviewsConstraints {
       $0.trailing.equalTo(userLocationButton.snp.trailing).inset(8)
       $0.bottom.equalTo(userLocationButton.snp.bottom).inset(8)
     }
+    
+    bottomSheetView.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+    }
   }
-
+  
 }
