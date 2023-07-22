@@ -11,14 +11,26 @@ import RxSwift
 import SnapKit
 import UIKit
 
-class MapViewController: UIViewController{
+final class MapViewController: UIViewController{
 
   // MARK: - Properties
   
-  // UI Properties
   var mapView: MKMapView!
   var locationManager = CLLocationManager()
-  var userLocationButton = UIButton()
+  
+  // MARK: - UI
+  
+  var userLocationButton: UIButton = {
+    // TODO: 버튼 클릭시 색상변경
+    let button = UIButton()
+    button.backgroundColor = .white
+    button.layer.cornerRadius = 20
+    button.layer.shadowColor = UIColor.black.cgColor
+    button.layer.shadowOffset = CGSize(width: 0, height: 2)
+    button.layer.shadowOpacity = 0.5
+    button.layer.shadowRadius = 3
+    return button
+  }()
   let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
   let bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
@@ -26,17 +38,31 @@ class MapViewController: UIViewController{
     bottomSheetView.barViewColor = .darkGray
     return bottomSheetView
   }()
+  let stateBarView: UIView = {
+    let view = UIView()
+    view.backgroundColor = .lightGray
+    return view
+  }()
   
-  // Feature Properties
+  func setNavigationBar() {
+    let rightBT = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dimissTrashPin))
+    self.navigationController?.isNavigationBarHidden = true
+    self.navigationController?.navigationItem.title = "쓰레기통"
+    self.navigationItem.rightBarButtonItem = rightBT
+    self.navigationController?.navigationBar.backgroundColor = .lightGray
+  }
   
   // MARK: - LifeCycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
     mapView = MKMapView(frame: view.frame)
+    setupCLLocationManager()
+    setupMapView()
+    addTarget()
     
     configureSubviews()
-    self.view.clipsToBounds = true
+    setNavigationBar()
     
     // TODO: 서버 API와 연결
     addTrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: 36.3167, longitude: 127.4435))
@@ -47,6 +73,10 @@ class MapViewController: UIViewController{
     mapView.addAnnotation(annotation)
   }
   
+  func addTarget() {
+    userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
+  }
+  
 // MARK: - Action
   
   @objc func setMapRegion() {
@@ -55,17 +85,8 @@ class MapViewController: UIViewController{
     mapView.setRegion(region, animated: true)
   }
   
-// MARK: - UISetting
-  
-  // TODO: 버튼 클릭시 색상변경
-  func setupUserLocationButton() {
-    userLocationButton.backgroundColor = .white
-    userLocationButton.layer.cornerRadius = 20
-    userLocationButton.layer.shadowColor = UIColor.black.cgColor
-    userLocationButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-    userLocationButton.layer.shadowOpacity = 0.5
-    userLocationButton.layer.shadowRadius = 3
-    userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
+  @objc func dimissTrashPin() {
+    print("select dismiss")
   }
   
 }
@@ -146,6 +167,11 @@ extension MapViewController: MKMapViewDelegate {
   
   func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
     // TODO: Trash에 대한 상세 정보
+    
+    bottomSheetView.popUpBottomSheet()
+    //UIView.animate(withDuration: 0.5) {
+      self.navigationController?.isNavigationBarHidden = false
+    
   }
   
 }
@@ -191,35 +217,17 @@ extension MapViewController: CLLocationManagerDelegate {
 extension MapViewController: LayoutSupport {
   func configureSubviews() {
     addSubviews()
-    setupLayouts()
+    setupSubviewsConstraints()
   }
   
   func addSubviews() {
     self.view.addSubview(mapView)
-    mapView.addSubview(userLocationButton)
-    
     self.view.addSubview(self.bottomSheetView)
-    
+    mapView.addSubview(stateBarView)
+    mapView.addSubview(userLocationButton)
     userLocationButton.addSubview(userLocationButtonImageView)
   }
-  
-  func setupLayouts() {
-    setupSubviewsLayouts()
-    setupSubviewsConstraints()
-  }
-  
-}
 
-extension MapViewController: SetupSubviewsLayouts {
-  
-  func setupSubviewsLayouts() {
-    setupCLLocationManager()
-    setupMapView()
-    
-    // UISetup
-    setupUserLocationButton()
-  }
-  
 }
 
 extension MapViewController: SetupSubviewsConstraints {
@@ -229,7 +237,6 @@ extension MapViewController: SetupSubviewsConstraints {
       $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(17)
       $0.bottom.equalTo(bottomSheetView.bottomSheetView.snp.top).inset(-25)
       $0.height.width.equalTo(40)
-      //$0.width.equalTo(40)
     }
     
     userLocationButtonImageView.snp.makeConstraints {
@@ -241,6 +248,11 @@ extension MapViewController: SetupSubviewsConstraints {
     
     bottomSheetView.snp.makeConstraints {
       $0.edges.equalToSuperview()
+    }
+    
+    stateBarView.snp.makeConstraints {
+      $0.top.leading.trailing.equalToSuperview()
+      $0.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top)
     }
   }
   

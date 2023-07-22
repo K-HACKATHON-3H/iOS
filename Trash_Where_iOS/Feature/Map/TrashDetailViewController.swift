@@ -8,13 +8,14 @@
 import SnapKit
 import UIKit
 
-class BottomSheetView: PassThroughView {
+final class BottomSheetView: PassThroughView {
   
   // MARK: Constants
   enum Mode {
     case tip
     case full
   }
+  
   private enum Const {
     static let duration = 0.5
     static let cornerRadius = 12.0
@@ -33,20 +34,7 @@ class BottomSheetView: PassThroughView {
     }
   }
   
-  // MARK: UI
-  let bottomSheetView: UIView = {
-    let view = UIView()
-    view.backgroundColor = .systemGroupedBackground
-    return view
-  }()
-  private let barView: UIView = {
-    let view = UIView()
-    view.backgroundColor = .lightGray
-    view.isUserInteractionEnabled = false
-    return view
-  }()
-  
-  // MARK: Properties
+  // MARK: - Properties
   var mode: Mode = .tip {
     didSet {
       switch self.mode {
@@ -65,37 +53,54 @@ class BottomSheetView: PassThroughView {
     didSet { self.barView.backgroundColor = self.barViewColor }
   }
   
-  // MARK: Initializer
-  @available(*, unavailable)
-  required init?(coder: NSCoder) {
-    fatalError("init() has not been implemented")
-  }
+  // MARK: - UI
+  
+  let bottomSheetView: UIView = {
+    let view = UIView()
+    view.backgroundColor = .systemGroupedBackground
+    return view
+  }()
+  private let barView: UIView = {
+    let view = UIView()
+    view.backgroundColor = .lightGray
+    view.isUserInteractionEnabled = false
+    return view
+  }()
+  let handlerView: UIView = {
+    let view = UIView()
+    view.backgroundColor = .clear
+    return view
+  }()
+  let testLabel: UILabel = {
+    let label = UILabel()
+    label.text = "BottomSheetView"
+    return label
+  }()
+  
+  // MARK: - Initializer
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     
     self.backgroundColor = .clear
     let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-    self.addGestureRecognizer(panGesture)
+    //self.addGestureRecognizer(panGesture)
+    self.handlerView.addGestureRecognizer(panGesture)
     
     self.bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.bottomSheetView.layer.cornerRadius = Const.cornerRadius
     self.bottomSheetView.clipsToBounds = true
     
-    self.addSubview(self.bottomSheetView)
-    self.bottomSheetView.addSubview(self.barView)
-    
-    self.bottomSheetView.snp.makeConstraints {
-      $0.left.right.bottom.equalToSuperview()
-      $0.top.equalTo(Const.bottomSheetYPosition(.tip))
-    }
-    self.barView.snp.makeConstraints {
-      $0.centerX.equalToSuperview()
-      $0.top.equalToSuperview().inset(Const.barViewTopSpacing)
-      $0.size.equalTo(Const.barViewSize)
-    }
+    configureSubviews()
   }
   
-  // MARK: Methods
+  @available(*, unavailable)
+  required init?(coder: NSCoder) {
+    fatalError("init() has not been implemented")
+  }
+  
+  // MARK: - Action
+  
   @objc private func didPan(_ recognizer: UIPanGestureRecognizer) {
     let translationY = recognizer.translation(in: self).y
     let minY = self.bottomSheetView.frame.minY
@@ -126,11 +131,60 @@ class BottomSheetView: PassThroughView {
     )
   }
   
+  public func popUpBottomSheet() {
+    let fullHeight = 500.0
+    updateConstraint(offset: fullHeight)
+  }
+  
+}
+
+//MARK: - LayoutSupport
+
+extension BottomSheetView: LayoutSupport {
+
+  func configureSubviews() {
+    addSubviews()
+    setupSubviewsConstraints()
+  }
+
+  func addSubviews() {
+    self.addSubview(self.bottomSheetView)
+    self.bottomSheetView.addSubview(handlerView)
+    self.handlerView.addSubview(self.barView)
+    self.bottomSheetView.addSubview(testLabel)
+  }
+
+}
+
+extension BottomSheetView: SetupSubviewsConstraints {
+
   private func updateConstraint(offset: Double) {
     self.bottomSheetView.snp.updateConstraints {
       $0.left.right.bottom.equalToSuperview()
       $0.top.equalToSuperview().inset(offset)
     }
   }
-}
+  
+  func setupSubviewsConstraints() {
+    self.bottomSheetView.snp.makeConstraints {
+      $0.left.right.bottom.equalToSuperview()
+      $0.top.equalTo(Const.bottomSheetYPosition(.tip))
+    }
+    
+    self.barView.snp.makeConstraints {
+      $0.centerX.equalToSuperview()
+      $0.top.equalToSuperview().inset(Const.barViewTopSpacing)
+      $0.size.equalTo(Const.barViewSize)
+    }
+    
+    self.handlerView.snp.makeConstraints {
+      $0.top.leading.trailing.equalTo(bottomSheetView)
+      $0.height.equalTo(40)
+    }
+    
+    self.testLabel.snp.makeConstraints {
+      $0.centerX.centerY.equalToSuperview()
+    }
+  }
 
+}

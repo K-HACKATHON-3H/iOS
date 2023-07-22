@@ -9,27 +9,29 @@ import Foundation
 
 ///UIView type's default configure
 protocol LayoutSupport {
-    
-    /// Combine setupview's all configuration
-    func configureSubviews()
-
-    /// Add view to view's subview
-    func addSubviews()
-
-    /// Setup subview's layout
-    func setupLayouts()
+  
+  /// Combine setupview's all configuration
+  func configureSubviews()
+  
+  /// Add view to view's subview
+  func addSubviews()
+  
+  ///Use ConfigureUI.setupConstraints(detail:apply:)
+  func setupSubviewsConstraints()
 }
 
+// 잘 안씀
+
 protocol SetupSubviewsLayouts {
-    
-    ///Use ConfigureUI.setupLayout(detail:apply:)
-    func setupSubviewsLayouts()
-    
+  
+  ///Use ConfigureUI.setupLayout(detail:apply:)
+  func setupSubviewsLayouts()
+  
 }
 
 protocol SetupSubviewsConstraints {
-    
-    ///Use ConfigureUI.setupConstraints(detail:apply:)
-    func setupSubviewsConstraints()
-    
+  
+  ///Use ConfigureUI.setupConstraints(detail:apply:)
+  func setupSubviewsConstraints()
+  
 }

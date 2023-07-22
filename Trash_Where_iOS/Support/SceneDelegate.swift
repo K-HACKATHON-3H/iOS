@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     guard let windowScene = (scene as? UIWindowScene) else { return }
     
     // let TabBarVC = TabBarController()
-    let MapVC = MapViewController()
+    let MapVC = UINavigationController(rootViewController: MapViewController())
     
     window = UIWindow(frame: UIScreen.main.bounds)
     window?.rootViewController = MapVC
