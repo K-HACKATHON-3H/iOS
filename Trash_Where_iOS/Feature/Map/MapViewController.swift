@@ -38,19 +38,23 @@ final class MapViewController: UIViewController{
     bottomSheetView.barViewColor = .darkGray
     return bottomSheetView
   }()
-  let stateBarView: UIView = {
-    let view = UIView()
-    view.backgroundColor = .lightGray
-    return view
+  let cancelPinButton: UIButton = {
+    let button = UIButton()
+    let cancelImageView = UIImageView(image: UIImage(systemName: "xmark"))
+    button.backgroundColor = .white
+    button.layer.cornerRadius = 20
+    button.layer.shadowColor = UIColor.black.cgColor
+    button.layer.shadowOffset = CGSize(width: 0, height: 2)
+    button.layer.shadowOpacity = 0.5
+    button.layer.shadowRadius = 3
+    button.isHidden = true
+    button.addSubview(cancelImageView)
+    cancelImageView.snp.makeConstraints {
+      $0.centerX.centerY.equalToSuperview()
+    }
+    cancelImageView.tintColor = .black
+    return button
   }()
-  
-  func setNavigationBar() {
-    let rightBT = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dimissTrashPin))
-    self.navigationController?.isNavigationBarHidden = true
-    self.navigationController?.navigationItem.title = "쓰레기통"
-    self.navigationItem.rightBarButtonItem = rightBT
-    self.navigationController?.navigationBar.backgroundColor = .lightGray
-  }
   
   // MARK: - LifeCycle
   
@@ -62,7 +66,6 @@ final class MapViewController: UIViewController{
     addTarget()
     
     configureSubviews()
-    setNavigationBar()
     
     // TODO: 서버 API와 연결
     addTrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: 36.3167, longitude: 127.4435))
@@ -75,6 +78,7 @@ final class MapViewController: UIViewController{
   
   func addTarget() {
     userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
+    cancelPinButton.addTarget(self, action: #selector(cancelPin), for: .touchUpInside)
   }
   
 // MARK: - Action
@@ -85,8 +89,9 @@ final class MapViewController: UIViewController{
     mapView.setRegion(region, animated: true)
   }
   
-  @objc func dimissTrashPin() {
+  @objc func cancelPin() {
     print("select dismiss")
+    bottomSheetView.pushDownBottomSheet()
   }
   
 }
@@ -165,13 +170,20 @@ extension MapViewController: MKMapViewDelegate {
     return annotationView
   }
   
-  func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-    // TODO: Trash에 대한 상세 정보
+  func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
+    if annotation is MKUserLocation {
+      return
+    }
     
-    bottomSheetView.popUpBottomSheet()
-    //UIView.animate(withDuration: 0.5) {
-      self.navigationController?.isNavigationBarHidden = false
+    self.cancelPinButton.isHidden = false
+    self.bottomSheetView.popUpBottomSheet()
     
+    var coordiCenterLa = annotation.coordinate.latitude
+    let coordiCenterLo = annotation.coordinate.longitude
+    coordiCenterLa -= 0.002
+    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
+                                    latitudinalMeters: 450, longitudinalMeters: 450)
+    mapView.setRegion(region, animated: true)
   }
   
 }
@@ -223,8 +235,8 @@ extension MapViewController: LayoutSupport {
   func addSubviews() {
     self.view.addSubview(mapView)
     self.view.addSubview(self.bottomSheetView)
-    mapView.addSubview(stateBarView)
     mapView.addSubview(userLocationButton)
+    mapView.addSubview(cancelPinButton)
     userLocationButton.addSubview(userLocationButtonImageView)
   }
 
@@ -250,9 +262,10 @@ extension MapViewController: SetupSubviewsConstraints {
       $0.edges.equalToSuperview()
     }
     
-    stateBarView.snp.makeConstraints {
-      $0.top.leading.trailing.equalToSuperview()
-      $0.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+    cancelPinButton.snp.makeConstraints {
+      $0.top.equalToSuperview().offset(70)
+      $0.trailing.equalToSuperview().inset(20)
+      $0.height.width.equalTo(40)
     }
   }
   

@@ -136,6 +136,11 @@ final class BottomSheetView: PassThroughView {
     updateConstraint(offset: fullHeight)
   }
   
+  public func pushDownBottomSheet() {
+    let tipHeight = 120.0
+    updateConstraint(offset: tipHeight)
+  }
+  
 }
 
 //MARK: - LayoutSupport
