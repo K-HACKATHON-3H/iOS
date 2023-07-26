@@ -5,6 +5,7 @@
 //  Created by 이치훈 on 2023/07/20.
 //
 
+import MapKit
 import SnapKit
 import UIKit
 
@@ -40,6 +41,7 @@ final class BottomSheetView: PassThroughView {
       switch self.mode {
       case .tip:
         cancelPinButton.isHidden = true
+        mapView?.deselectAnnotation(mapView?.selectedAnnotations as? MKAnnotation, animated: true)
         break
       case .full:
         cancelPinButton.isHidden = false
@@ -54,6 +56,7 @@ final class BottomSheetView: PassThroughView {
   var barViewColor: UIColor? {
     didSet { self.barView.backgroundColor = self.barViewColor }
   }
+  var mapView: MKMapView?
   
   // MARK: - UI
   

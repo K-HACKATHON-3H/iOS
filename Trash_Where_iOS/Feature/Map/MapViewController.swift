@@ -32,10 +32,11 @@ final class MapViewController: UIViewController{
     return button
   }()
   let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
-  let bottomSheetView: BottomSheetView = {
+  lazy var bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
     bottomSheetView.bottomSheetColor = .lightGray
     bottomSheetView.barViewColor = .darkGray
+    bottomSheetView.mapView = self.mapView
     return bottomSheetView
   }()
   
