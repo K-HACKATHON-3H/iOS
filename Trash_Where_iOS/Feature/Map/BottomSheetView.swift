@@ -39,8 +39,10 @@ final class BottomSheetView: PassThroughView {
     didSet {
       switch self.mode {
       case .tip:
+        cancelPinButton.isHidden = true
         break
       case .full:
+        cancelPinButton.isHidden = false
         break
       }
       self.updateConstraint(offset: Const.bottomSheetYPosition(self.mode))
@@ -64,6 +66,7 @@ final class BottomSheetView: PassThroughView {
     let view = UIView()
     view.backgroundColor = .lightGray
     view.isUserInteractionEnabled = false
+    view.layer.cornerRadius = 2.5
     return view
   }()
   let handlerView: UIView = {
@@ -76,6 +79,23 @@ final class BottomSheetView: PassThroughView {
     label.text = "BottomSheetView"
     return label
   }()
+  let cancelPinButton: UIButton = {
+    let button = UIButton()
+    let cancelImageView = UIImageView(image: UIImage(systemName: "xmark"))
+    button.backgroundColor = .white
+    button.layer.cornerRadius = 15
+    button.layer.shadowColor = UIColor.black.cgColor
+    button.layer.shadowOffset = CGSize(width: 0, height: 2)
+    button.layer.shadowOpacity = 0.5
+    button.layer.shadowRadius = 3
+    button.isHidden = true
+    button.addSubview(cancelImageView)
+    cancelImageView.snp.makeConstraints {
+      $0.centerX.centerY.equalToSuperview()
+    }
+    cancelImageView.tintColor = .black
+    return button
+  }()
   
   // MARK: - Initializer
   
@@ -84,19 +104,23 @@ final class BottomSheetView: PassThroughView {
     
     self.backgroundColor = .clear
     let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-    //self.addGestureRecognizer(panGesture)
     self.handlerView.addGestureRecognizer(panGesture)
     
     self.bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.bottomSheetView.layer.cornerRadius = Const.cornerRadius
     self.bottomSheetView.clipsToBounds = true
     
+    addTarget()
     configureSubviews()
   }
   
   @available(*, unavailable)
   required init?(coder: NSCoder) {
     fatalError("init() has not been implemented")
+  }
+  
+  func addTarget() {
+    cancelPinButton.addTarget(self, action: #selector(cancelPin), for: .touchUpInside)
   }
   
   // MARK: - Action
@@ -131,14 +155,36 @@ final class BottomSheetView: PassThroughView {
     )
   }
   
-  public func popUpBottomSheet() {
-    let fullHeight = 500.0
-    updateConstraint(offset: fullHeight)
+  @objc func cancelPin() {
+    print("select dismiss")
+    self.pushDownBottomSheet()
+    cancelPinButton.isHidden = true
   }
   
-  public func pushDownBottomSheet() {
-    let tipHeight = 120.0
-    updateConstraint(offset: tipHeight)
+  public func popUpBottomSheet() { // bottomSheetView 올림
+    UIView.animate(
+      withDuration: Const.duration,
+      delay: 0,
+      options: .allowUserInteraction,
+      animations: {
+        // velocity를 이용하여 위로 스와이프인지, 아래로 스와이프인지 확인
+        self.mode = .full
+      },
+      completion: nil
+    )
+  }
+  
+  public func pushDownBottomSheet() { //bottomSheetView 내림
+    UIView.animate(
+      withDuration: Const.duration,
+      delay: 0,
+      options: .allowUserInteraction,
+      animations: {
+        // velocity를 이용하여 위로 스와이프인지, 아래로 스와이프인지 확인
+        self.mode = .tip
+      },
+      completion: nil
+    )
   }
   
 }
@@ -157,6 +203,7 @@ extension BottomSheetView: LayoutSupport {
     self.bottomSheetView.addSubview(handlerView)
     self.handlerView.addSubview(self.barView)
     self.bottomSheetView.addSubview(testLabel)
+    self.handlerView.addSubview(cancelPinButton)
   }
 
 }
@@ -189,6 +236,12 @@ extension BottomSheetView: SetupSubviewsConstraints {
     
     self.testLabel.snp.makeConstraints {
       $0.centerX.centerY.equalToSuperview()
+    }
+    
+    self.cancelPinButton.snp.makeConstraints {
+      $0.centerY.equalToSuperview()
+      $0.trailing.equalToSuperview().inset(5)
+      $0.height.width.equalTo(30)
     }
   }
 

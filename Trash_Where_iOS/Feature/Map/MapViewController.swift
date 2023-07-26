@@ -38,23 +38,7 @@ final class MapViewController: UIViewController{
     bottomSheetView.barViewColor = .darkGray
     return bottomSheetView
   }()
-  let cancelPinButton: UIButton = {
-    let button = UIButton()
-    let cancelImageView = UIImageView(image: UIImage(systemName: "xmark"))
-    button.backgroundColor = .white
-    button.layer.cornerRadius = 20
-    button.layer.shadowColor = UIColor.black.cgColor
-    button.layer.shadowOffset = CGSize(width: 0, height: 2)
-    button.layer.shadowOpacity = 0.5
-    button.layer.shadowRadius = 3
-    button.isHidden = true
-    button.addSubview(cancelImageView)
-    cancelImageView.snp.makeConstraints {
-      $0.centerX.centerY.equalToSuperview()
-    }
-    cancelImageView.tintColor = .black
-    return button
-  }()
+  
   
   // MARK: - LifeCycle
   
@@ -78,7 +62,7 @@ final class MapViewController: UIViewController{
   
   func addTarget() {
     userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
-    cancelPinButton.addTarget(self, action: #selector(cancelPin), for: .touchUpInside)
+    
   }
   
 // MARK: - Action
@@ -89,10 +73,7 @@ final class MapViewController: UIViewController{
     mapView.setRegion(region, animated: true)
   }
   
-  @objc func cancelPin() {
-    print("select dismiss")
-    bottomSheetView.pushDownBottomSheet()
-  }
+  
   
 }
 
@@ -175,7 +156,7 @@ extension MapViewController: MKMapViewDelegate {
       return
     }
     
-    self.cancelPinButton.isHidden = false
+    self.bottomSheetView.cancelPinButton.isHidden = false
     self.bottomSheetView.popUpBottomSheet()
     
     var coordiCenterLa = annotation.coordinate.latitude
@@ -236,7 +217,6 @@ extension MapViewController: LayoutSupport {
     self.view.addSubview(mapView)
     self.view.addSubview(self.bottomSheetView)
     mapView.addSubview(userLocationButton)
-    mapView.addSubview(cancelPinButton)
     userLocationButton.addSubview(userLocationButtonImageView)
   }
 
@@ -262,11 +242,6 @@ extension MapViewController: SetupSubviewsConstraints {
       $0.edges.equalToSuperview()
     }
     
-    cancelPinButton.snp.makeConstraints {
-      $0.top.equalToSuperview().offset(70)
-      $0.trailing.equalToSuperview().inset(20)
-      $0.height.width.equalTo(40)
-    }
   }
   
 }
