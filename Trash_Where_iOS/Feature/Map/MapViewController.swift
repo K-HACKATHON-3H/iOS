@@ -11,36 +11,60 @@ import RxSwift
 import SnapKit
 import UIKit
 
-class MapViewController: UIViewController{
+final class MapViewController: UIViewController{
 
   // MARK: - Properties
   
-  // UI Properties
   var mapView: MKMapView!
   var locationManager = CLLocationManager()
-  var userLocationButton = UIButton()
-  let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
   
-  // Feature Properties
-  lazy var center = mapView.centerCoordinate
-  lazy var span = mapView.region.span
-
-  let maxLatitude: CLLocationDegrees = 42.0
-  let minLatitude: CLLocationDegrees = 29.0
-  let maxLongitude: CLLocationDegrees = 130.0
-  let minLongitude: CLLocationDegrees = 125.0
-
-  lazy var newCenter = center
+  // MARK: - UI
+  
+  var userLocationButton: UIButton = {
+    // TODO: 버튼 클릭시 색상변경
+    let button = UIButton()
+    button.backgroundColor = .white
+    button.layer.cornerRadius = 20
+    button.layer.shadowColor = UIColor.black.cgColor
+    button.layer.shadowOffset = CGSize(width: 0, height: 2)
+    button.layer.shadowOpacity = 0.5
+    button.layer.shadowRadius = 3
+    return button
+  }()
+  let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
+  let bottomSheetView: BottomSheetView = {
+    let bottomSheetView = BottomSheetView()
+    bottomSheetView.bottomSheetColor = .lightGray
+    bottomSheetView.barViewColor = .darkGray
+    return bottomSheetView
+  }()
+  
   
   // MARK: - LifeCycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
     mapView = MKMapView(frame: view.frame)
+    setupCLLocationManager()
+    setupMapView()
+    addTarget()
     
     configureSubviews()
+    
+    // TODO: 서버 API와 연결
+    addTrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: 36.3167, longitude: 127.4435))
   }
-
+  
+  func addTrashAnnotation(imageType: Int, coordinate: CLLocationCoordinate2D) {
+    let annotation = TrashAnnotation(imageType: imageType, coordinate: coordinate)
+    mapView.addAnnotation(annotation)
+  }
+  
+  func addTarget() {
+    userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
+    
+  }
+  
 // MARK: - Action
   
   @objc func setMapRegion() {
@@ -49,18 +73,7 @@ class MapViewController: UIViewController{
     mapView.setRegion(region, animated: true)
   }
   
-// MARK: - UISetting
   
-  // TODO: 버튼 클릭시 색상변경
-  func setupUserLocationButton() {
-    userLocationButton.backgroundColor = .white
-    userLocationButton.layer.cornerRadius = 20
-    userLocationButton.layer.shadowColor = UIColor.black.cgColor
-    userLocationButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-    userLocationButton.layer.shadowOpacity = 0.5
-    userLocationButton.layer.shadowRadius = 3
-    userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
-  }
   
 }
 
@@ -72,7 +85,6 @@ extension MapViewController: MKMapViewDelegate {
   func setupMapView() {
     mapView.delegate = self
     mapView.showsUserLocation = true // 사용자 위치
-    
   }
   
   // 척도 범위 설정
@@ -90,8 +102,9 @@ extension MapViewController: MKMapViewDelegate {
     }
   }
   
-  // 사용자 현재위치의 view setting
   func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    
+    // 사용자 현재위치의 view setting
     if annotation is MKUserLocation {
       let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
       annotationView.image = UIImage(named: "userLocationIcon")
@@ -103,7 +116,55 @@ extension MapViewController: MKMapViewDelegate {
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
-    return nil
+    
+    guard let annotation = annotation as? TrashAnnotation else {
+      return nil
+    }
+    
+    var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier:
+                                                                TrashAnnotationView.identifier)
+    
+    if annotationView == nil {
+      annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier:
+                                          TrashAnnotationView.identifier)
+      annotationView?.canShowCallout = false
+      annotationView?.contentMode = .scaleAspectFit
+    } else {
+      annotationView?.annotation = annotation
+    }
+    
+    let annotationImage: UIImage!
+    let size = CGSize(width: 65, height: 69)
+    UIGraphicsBeginImageContext(size)
+    
+    // TODO: 추가되는 서비스를 대비한 logic
+    switch annotation.imageType {
+    case 0:
+      annotationImage = UIImage(named: "TestPin")
+    default:
+      annotationImage = UIImage(systemName: "trash.circle")
+    }
+    annotationImage.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+    let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+    annotationView?.image = resizedImage
+    
+    return annotationView
+  }
+  
+  func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
+    if annotation is MKUserLocation {
+      return
+    }
+    
+    self.bottomSheetView.cancelPinButton.isHidden = false
+    self.bottomSheetView.popUpBottomSheet()
+    
+    var coordiCenterLa = annotation.coordinate.latitude
+    let coordiCenterLo = annotation.coordinate.longitude
+    coordiCenterLa -= 0.002
+    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
+                                    latitudinalMeters: 450, longitudinalMeters: 450)
+    mapView.setRegion(region, animated: true)
   }
   
 }
@@ -128,7 +189,7 @@ extension MapViewController: CLLocationManagerDelegate {
     
     let region = MKCoordinateRegion(center: location.coordinate,
                                     latitudinalMeters: 450, longitudinalMeters: 450)
-    mapView.setRegion(region, animated: true)
+    mapView.setRegion(region, animated: false)
     
     // 위치 업데이트 종료
     locationManager.stopUpdatingLocation()
@@ -149,43 +210,25 @@ extension MapViewController: CLLocationManagerDelegate {
 extension MapViewController: LayoutSupport {
   func configureSubviews() {
     addSubviews()
-    setupLayouts()
+    setupSubviewsConstraints()
   }
   
   func addSubviews() {
     self.view.addSubview(mapView)
+    self.view.addSubview(self.bottomSheetView)
     mapView.addSubview(userLocationButton)
-    
     userLocationButton.addSubview(userLocationButtonImageView)
   }
-  
-  func setupLayouts() {
-    setupSubviewsLayouts()
-    setupSubviewsConstraints()
-  }
-  
-}
 
-extension MapViewController: SetupSubviewsLayouts {
-  
-  func setupSubviewsLayouts() {
-    setupCLLocationManager()
-    setupMapView()
-    
-    // UISetup
-    setupUserLocationButton()
-  }
-  
 }
 
 extension MapViewController: SetupSubviewsConstraints {
-
+  
   func setupSubviewsConstraints() {
     userLocationButton.snp.makeConstraints {
       $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(17)
-      $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(35)
-      $0.height.equalTo(40)
-      $0.width.equalTo(40)
+      $0.bottom.equalTo(bottomSheetView.bottomSheetView.snp.top).inset(-25)
+      $0.height.width.equalTo(40)
     }
     
     userLocationButtonImageView.snp.makeConstraints {
@@ -194,6 +237,11 @@ extension MapViewController: SetupSubviewsConstraints {
       $0.trailing.equalTo(userLocationButton.snp.trailing).inset(8)
       $0.bottom.equalTo(userLocationButton.snp.bottom).inset(8)
     }
+    
+    bottomSheetView.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+    }
+    
   }
-
+  
 }
