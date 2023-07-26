@@ -52,28 +52,34 @@ final class MapViewController: UIViewController{
     configureSubviews()
     
     // TODO: 서버 API와 연결
-    addTrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: 36.3167, longitude: 127.4435))
+    addTrashAnnotation()
   }
   
-  func addTrashAnnotation(imageType: Int, coordinate: CLLocationCoordinate2D) {
-    let annotation = TrashAnnotation(imageType: imageType, coordinate: coordinate)
-    mapView.addAnnotation(annotation)
+  func addTrashAnnotation() {
+    let coordinate = [
+      (36.3167, 127.4435), (36.3178, 127.4419), (36.3167, 127.4400), (36.3141, 127.4455), (36.3198, 127.4482)]
+    
+    _=coordinate.map {
+      mapView.addAnnotation(TrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: $0.0, longitude: $0.1)))
+    }
   }
   
   func addTarget() {
     userLocationButton.addTarget(self, action: #selector(setMapRegion), for: .touchUpInside)
-    
   }
   
 // MARK: - Action
   
   @objc func setMapRegion() {
-    let region = MKCoordinateRegion(center: mapView.userLocation.coordinate,
+    var coordiCenterLa = mapView.userLocation.coordinate.latitude
+    let coordiCenterLo = mapView.userLocation.coordinate.longitude
+    coordiCenterLa -= 0.001
+    
+    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
+    bottomSheetView.mode = .tip
   }
-  
-  
   
 }
 
@@ -187,7 +193,11 @@ extension MapViewController: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     guard let location = locations.last else { return }
     
-    let region = MKCoordinateRegion(center: location.coordinate,
+    var coordiCenterLa = location.coordinate.latitude
+    coordiCenterLa -= 0.001
+    let coordiCenterLo = location.coordinate.longitude
+    
+    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: false)
     
