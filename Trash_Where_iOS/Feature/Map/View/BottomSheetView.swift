@@ -27,7 +27,7 @@ final class BottomSheetView: PassThroughView {
       case .tip:
         return 0.83 // 위에서 부터의 값 (밑으로 갈수록 값이 커짐)
       case .full:
-        return 0.5
+        return 0.58
       }
     }
     static let bottomSheetYPosition: (Mode) -> Double = { mode in
@@ -42,6 +42,7 @@ final class BottomSheetView: PassThroughView {
       case .tip:
         cancelPinButton.isHidden = true
         mapView?.deselectAnnotation(mapView?.selectedAnnotations as? MKAnnotation, animated: true)
+        mapView.removeMapViewOverlayOfLast()
         break
       case .full:
         cancelPinButton.isHidden = false
@@ -56,7 +57,7 @@ final class BottomSheetView: PassThroughView {
   var barViewColor: UIColor? {
     didSet { self.barView.backgroundColor = self.barViewColor }
   }
-  var mapView: MKMapView?
+  var mapView: MKMapView!
   
   // MARK: - UI
   
@@ -106,9 +107,7 @@ final class BottomSheetView: PassThroughView {
     super.init(frame: frame)
     
     self.backgroundColor = .clear
-    let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-    self.handlerView.addGestureRecognizer(panGesture)
-    
+   
     self.bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.bottomSheetView.layer.cornerRadius = Const.cornerRadius
     self.bottomSheetView.clipsToBounds = true
@@ -123,6 +122,8 @@ final class BottomSheetView: PassThroughView {
   }
   
   func addTarget() {
+    let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
+    self.handlerView.addGestureRecognizer(panGesture)
     cancelPinButton.addTarget(self, action: #selector(cancelPin), for: .touchUpInside)
   }
   
@@ -159,10 +160,11 @@ final class BottomSheetView: PassThroughView {
   }
   
   @objc func cancelPin() {
-    print("select dismiss")
     self.pushDownBottomSheet()
     cancelPinButton.isHidden = true
   }
+  
+  // MARK: - Method
   
   public func popUpBottomSheet() { // bottomSheetView 올림
     UIView.animate(

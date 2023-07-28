@@ -11,27 +11,32 @@ import RxSwift
 import SnapKit
 import UIKit
 
-final class MapViewController: UIViewController{
+final class MapViewController: UIViewController {
 
   // MARK: - Properties
   
   var mapView: MKMapView!
   var locationManager = CLLocationManager()
+  var directions = [String]()
   
   // MARK: - UI
   
   var userLocationButton: UIButton = {
     // TODO: 버튼 클릭시 색상변경
     let button = UIButton()
+    let userLocationImageView = UIImageView(image: UIImage(named: "GPSemoji"))
     button.backgroundColor = .white
     button.layer.cornerRadius = 20
     button.layer.shadowColor = UIColor.black.cgColor
     button.layer.shadowOffset = CGSize(width: 0, height: 2)
     button.layer.shadowOpacity = 0.5
     button.layer.shadowRadius = 3
+    button.addSubview(userLocationImageView)
+    userLocationImageView.snp.makeConstraints {
+      $0.edges.equalToSuperview().inset(8)
+    }
     return button
   }()
-  let userLocationButtonImageView = UIImageView(image: UIImage(named: "GPSemoji"))
   lazy var bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
     bottomSheetView.bottomSheetColor = .lightGray
@@ -57,8 +62,11 @@ final class MapViewController: UIViewController{
   }
   
   func addTrashAnnotation() {
+    // Sample Data
     let coordinate = [
-      (36.3167, 127.4435), (36.3178, 127.4419), (36.3167, 127.4400), (36.3141, 127.4455), (36.3198, 127.4482)]
+      (36.3167, 127.4435), (36.3178, 127.4419),
+      (36.3167, 127.4400), (36.3141, 127.4455),
+      (36.3198, 127.4482)]
     
     _=coordinate.map {
       mapView.addAnnotation(TrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: $0.0, longitude: $0.1)))
@@ -80,6 +88,59 @@ final class MapViewController: UIViewController{
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
     bottomSheetView.mode = .tip
+    
+    mapView.removeMapViewOverlayOfLast()
+  }
+  
+  // MARK: - Method
+  
+  func calculateDirections(coordinate: CLLocationCoordinate2D) {
+    let destinationPlacemark = MKPlacemark(coordinate: coordinate)
+    // 사용자의 현재 위치
+    let startMapItem = MKMapItem.forCurrentLocation()
+    // 도착 위치
+    let destinationMapItem = MKMapItem(placemark: destinationPlacemark)
+    
+    let request = MKDirections.Request()
+    request.transportType = .walking
+    request.source = startMapItem
+    request.destination = destinationMapItem
+    
+    let direction = MKDirections(request: request)
+    direction.calculate { [weak self] response, error in
+      if let error = error {
+        print(error.localizedDescription)
+        return
+      }
+      
+      //rotue.first에는 경로의 경우의 수 중 가장 빠른 경로를 가지고 있음
+      guard let response = response, let route = response.routes.first else {
+        return
+      }
+      
+      if !route.steps.isEmpty {
+        for step in route.steps {
+          print(step.instructions)
+          
+          self?.directions.append(step.instructions)
+        }
+      }
+      
+      self?.mapView.addOverlay(route.polyline, level: .aboveRoads)
+    }
+  }
+  
+}
+
+
+//MARK: - Method
+
+extension MKMapView {
+  
+  public func removeMapViewOverlayOfLast() {
+    if !overlays.isEmpty {
+      removeOverlay(overlays.last!)
+    }
   }
   
 }
@@ -110,7 +171,6 @@ extension MapViewController: MKMapViewDelegate {
   }
   
   func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-    
     // 사용자 현재위치의 view setting
     if annotation is MKUserLocation {
       let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
@@ -158,20 +218,36 @@ extension MapViewController: MKMapViewDelegate {
     return annotationView
   }
   
+  // annotation 클릭시 이 함수 호출
   func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
     if annotation is MKUserLocation {
       return
     }
     
+    mapView.removeMapViewOverlayOfLast()
     self.bottomSheetView.cancelPinButton.isHidden = false
     self.bottomSheetView.popUpBottomSheet()
     
     var coordiCenterLa = annotation.coordinate.latitude
     let coordiCenterLo = annotation.coordinate.longitude
     coordiCenterLa -= 0.002
-    let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
+    
+    let coordinate = CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo)
+    let region = MKCoordinateRegion(center: coordinate,
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
+    calculateDirections(coordinate: annotation.coordinate)
+  }
+  
+  func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+    if overlay is MKPolyline {
+      let polylineRenderer = MKPolylineRenderer(overlay: overlay)
+      polylineRenderer.lineWidth = 5.0
+      polylineRenderer.strokeColor = .blue
+      return polylineRenderer
+    }
+    
+    return MKOverlayRenderer()
   }
   
 }
@@ -228,7 +304,6 @@ extension MapViewController: LayoutSupport {
     self.view.addSubview(mapView)
     self.view.addSubview(self.bottomSheetView)
     mapView.addSubview(userLocationButton)
-    userLocationButton.addSubview(userLocationButtonImageView)
   }
 
 }
@@ -240,13 +315,6 @@ extension MapViewController: SetupSubviewsConstraints {
       $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(17)
       $0.bottom.equalTo(bottomSheetView.bottomSheetView.snp.top).inset(-25)
       $0.height.width.equalTo(40)
-    }
-    
-    userLocationButtonImageView.snp.makeConstraints {
-      $0.top.equalTo(userLocationButton.snp.top).offset(8)
-      $0.leading.equalTo(userLocationButton.snp.leading).offset(8)
-      $0.trailing.equalTo(userLocationButton.snp.trailing).inset(8)
-      $0.bottom.equalTo(userLocationButton.snp.bottom).inset(8)
     }
     
     bottomSheetView.snp.makeConstraints {

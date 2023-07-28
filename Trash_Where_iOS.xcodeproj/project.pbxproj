@@ -98,6 +98,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B1511042A718B3A00CDD240 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4B72EA142A5DAB5F0077C728 /* MapViewController.swift */,
+				4BFE62D92A695509003E5E31 /* BottomSheetView.swift */,
+				4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */,
+				4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		4B1511052A718B5300CDD240 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		4B1511062A718B7500CDD240 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		4B72EA042A5DAB5F0077C728 = {
 			isa = PBXGroup;
 			children = (
@@ -181,10 +206,9 @@
 		4B7475C72A5F09D0005F9412 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				4B72EA142A5DAB5F0077C728 /* MapViewController.swift */,
-				4BFE62D92A695509003E5E31 /* BottomSheetView.swift */,
-				4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */,
-				4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */,
+				4B1511052A718B5300CDD240 /* Model */,
+				4B1511042A718B3A00CDD240 /* View */,
+				4B1511062A718B7500CDD240 /* ViewModel */,
 			);
 			path = Map;
 			sourceTree = "<group>";

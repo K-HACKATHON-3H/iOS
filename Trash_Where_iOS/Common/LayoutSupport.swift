@@ -18,6 +18,7 @@ protocol LayoutSupport {
   
   ///Use ConfigureUI.setupConstraints(detail:apply:)
   func setupSubviewsConstraints()
+  
 }
 
 // 잘 안씀

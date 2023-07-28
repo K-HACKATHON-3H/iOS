@@ -8,7 +8,7 @@
 import MapKit
 import UIKit
 
-class TrashAnnotationView: MKAnnotationView {
+final class TrashAnnotationView: MKAnnotationView {
   
   static let identifier = "TrashAnnotationView"
   
