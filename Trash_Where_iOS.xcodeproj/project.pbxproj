@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B17E1A32A77DB3100DA8D9D /* ARNaviViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */; };
+		4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */; };
 		4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B72EA102A5DAB5F0077C728 /* AppDelegate.swift */; };
 		4B72EA132A5DAB5F0077C728 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B72EA122A5DAB5F0077C728 /* SceneDelegate.swift */; };
 		4B72EA152A5DAB5F0077C728 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B72EA142A5DAB5F0077C728 /* MapViewController.swift */; };
@@ -47,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNaviViewController.swift; sourceTree = "<group>"; };
+		4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewDelegate.swift; sourceTree = "<group>"; };
 		4B72EA0D2A5DAB5F0077C728 /* Trash_Where_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trash_Where_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B72EA102A5DAB5F0077C728 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4B72EA122A5DAB5F0077C728 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +109,7 @@
 				4BFE62D92A695509003E5E31 /* BottomSheetView.swift */,
 				4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */,
 				4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */,
+				4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -121,6 +126,14 @@
 			children = (
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		4B17E1A12A77DB0400DA8D9D /* ARNavi */ = {
+			isa = PBXGroup;
+			children = (
+				4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */,
+			);
+			path = ARNavi;
 			sourceTree = "<group>";
 		};
 		4B72EA042A5DAB5F0077C728 = {
@@ -186,6 +199,7 @@
 		4B72EA492A5DAD7F0077C728 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				4B17E1A12A77DB0400DA8D9D /* ARNavi */,
 				4B7475C72A5F09D0005F9412 /* Map */,
 				4B7475CA2A5F1A2D005F9412 /* DistanceRanking */,
 				4B7475CD2A5F1BFB005F9412 /* QRCode */,
@@ -388,9 +402,11 @@
 				4B7475CC2A5F1A8D005F9412 /* DistanceRankingViewController.swift in Sources */,
 				4B72EA4C2A5DAE0C0077C728 /* LayoutSupport.swift in Sources */,
 				4BFE62F32A6AE578003E5E31 /* PassThroughView.swift in Sources */,
+				4B17E1A32A77DB3100DA8D9D /* ARNaviViewController.swift in Sources */,
 				4BFE62D82A693803003E5E31 /* TrashAnnotationView.swift in Sources */,
 				4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */,
 				4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */,
+				4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */,
 				4B7475C92A5F0A24005F9412 /* TabBarController.swift in Sources */,
 				4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */,
 				4B7475CF2A5F1C2C005F9412 /* QRCodeViewController.swift in Sources */,

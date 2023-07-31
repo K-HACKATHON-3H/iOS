@@ -42,6 +42,7 @@ final class MapViewController: UIViewController {
     bottomSheetView.bottomSheetColor = .lightGray
     bottomSheetView.barViewColor = .darkGray
     bottomSheetView.mapView = self.mapView
+    bottomSheetView.delegate = self
     return bottomSheetView
   }()
   
@@ -132,8 +133,17 @@ final class MapViewController: UIViewController {
   
 }
 
+extension MapViewController: BottomSheetViewDelegate {
+  
+  func didTapARButton() {
+    let ARNaviView = ARNaviViewController()
+    ARNaviView.modalPresentationStyle = .fullScreen
+    self.present(ARNaviView, animated: true)
+  }
+  
+}
 
-//MARK: - Method
+//MARK: - MKMapView.Method
 
 extension MKMapView {
   
