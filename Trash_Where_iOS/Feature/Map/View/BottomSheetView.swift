@@ -36,6 +36,7 @@ final class BottomSheetView: PassThroughView {
   }
   
   // MARK: - Properties
+  
   var mode: Mode = .tip {
     didSet {
       switch self.mode {
@@ -43,9 +44,11 @@ final class BottomSheetView: PassThroughView {
         cancelPinButton.isHidden = true
         mapView?.deselectAnnotation(mapView?.selectedAnnotations as? MKAnnotation, animated: true)
         mapView.removeMapViewOverlayOfLast()
+        // hiddenDetailView()
         break
       case .full:
         cancelPinButton.isHidden = false
+        showDetailView()
         break
       }
       self.updateConstraint(offset: Const.bottomSheetYPosition(self.mode))
@@ -58,6 +61,7 @@ final class BottomSheetView: PassThroughView {
     didSet { self.barView.backgroundColor = self.barViewColor }
   }
   var mapView: MKMapView!
+  weak var delegate: BottomSheetViewDelegate?
   
   // MARK: - UI
   
@@ -68,7 +72,7 @@ final class BottomSheetView: PassThroughView {
   }()
   private let barView: UIView = {
     let view = UIView()
-    view.backgroundColor = .lightGray
+    view.backgroundColor = .white
     view.isUserInteractionEnabled = false
     view.layer.cornerRadius = 2.5
     return view
@@ -77,11 +81,6 @@ final class BottomSheetView: PassThroughView {
     let view = UIView()
     view.backgroundColor = .clear
     return view
-  }()
-  let testLabel: UILabel = {
-    let label = UILabel()
-    label.text = "BottomSheetView"
-    return label
   }()
   let cancelPinButton: UIButton = {
     let button = UIButton()
@@ -98,6 +97,32 @@ final class BottomSheetView: PassThroughView {
       $0.centerX.centerY.equalToSuperview()
     }
     cancelImageView.tintColor = .black
+    return button
+  }()
+  let proFileView: UIView = {
+    let view = UIView()
+    view.backgroundColor = .darkGray
+    view.layer.cornerRadius = 15
+    return view
+  }()
+  let proFileImageView: UIImageView = {
+    let imageView = UIImageView(image: UIImage(systemName: "person.crop.circle"))
+    imageView.layer.cornerRadius = 30
+    return imageView
+  }()
+  
+  let pinDetailView: UIView = {
+    let view = UIView()
+    view.backgroundColor = .clear
+    return view
+  }()
+  lazy var arButton: UIButton = {
+    let button = UIButton()
+    button.setTitle("AR Button", for: .normal)
+    button.backgroundColor = .black
+    button.layer.cornerRadius = 5
+    button.isHidden = true
+    button.addTarget(self, action: #selector(arButtonTapped), for: .touchUpInside)
     return button
   }()
   
@@ -146,6 +171,10 @@ final class BottomSheetView: PassThroughView {
       completion: nil
     )
     
+    if recognizer.velocity(in: self).y >= 0 {
+      hiddenDetailView()
+    }
+    
     guard recognizer.state == .ended else { return }
     UIView.animate(
       withDuration: Const.duration,
@@ -160,8 +189,13 @@ final class BottomSheetView: PassThroughView {
   }
   
   @objc func cancelPin() {
+    hiddenDetailView()
     self.pushDownBottomSheet()
     cancelPinButton.isHidden = true
+  }
+  
+  @objc func arButtonTapped() {
+    delegate?.didTapARButton()
   }
   
   // MARK: - Method
@@ -192,6 +226,20 @@ final class BottomSheetView: PassThroughView {
     )
   }
   
+  func showDetailView() {
+    arButton.isHidden = false
+    pinDetailView.addSubview(arButton)
+    arButton.snp.makeConstraints {
+      $0.centerX.centerY.equalToSuperview()
+      $0.height.equalTo(60)
+      $0.width.equalTo(100)
+    }
+  }
+  
+  func hiddenDetailView() {
+    arButton.removeFromSuperview()
+  }
+  
 }
 
 //MARK: - LayoutSupport
@@ -205,10 +253,16 @@ extension BottomSheetView: LayoutSupport {
 
   func addSubviews() {
     self.addSubview(self.bottomSheetView)
-    self.bottomSheetView.addSubview(handlerView)
+    self.bottomSheetView.addSubview(proFileView)
+    self.bottomSheetView.addSubview(pinDetailView)
+    
+    self.proFileView.addSubview(handlerView)
+    self.proFileView.addSubview(proFileImageView)
+    
     self.handlerView.addSubview(self.barView)
-    self.bottomSheetView.addSubview(testLabel)
     self.handlerView.addSubview(cancelPinButton)
+    
+    //self.pinDetailView.addSubview(arButton)
   }
 
 }
@@ -235,18 +289,32 @@ extension BottomSheetView: SetupSubviewsConstraints {
     }
     
     self.handlerView.snp.makeConstraints {
-      $0.top.leading.trailing.equalTo(bottomSheetView)
+      $0.top.leading.trailing.equalTo(proFileView)
       $0.height.equalTo(40)
-    }
-    
-    self.testLabel.snp.makeConstraints {
-      $0.centerX.centerY.equalToSuperview()
     }
     
     self.cancelPinButton.snp.makeConstraints {
       $0.centerY.equalToSuperview()
       $0.trailing.equalToSuperview().inset(5)
       $0.height.width.equalTo(30)
+    }
+    
+    self.proFileView.snp.makeConstraints {
+      $0.top.leading.trailing.equalToSuperview().inset(15)
+      $0.height.equalTo(UIScreen.main.bounds.height / 9)
+      //$0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+    }
+    
+    self.proFileImageView.snp.makeConstraints {
+      $0.centerY.equalToSuperview()
+      $0.leading.equalToSuperview().offset(20)
+      $0.height.width.equalTo(60)
+    }
+    
+    self.pinDetailView.snp.makeConstraints {
+      $0.top.equalTo(proFileView.snp.bottom)
+      $0.leading.trailing.equalToSuperview()
+      $0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
     }
   }
 
