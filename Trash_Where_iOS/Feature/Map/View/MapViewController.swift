@@ -90,6 +90,7 @@ final class MapViewController: UIViewController {
     mapView.setRegion(region, animated: true)
     bottomSheetView.mode = .tip
     
+    bottomSheetView.hiddenDetailView()
     mapView.removeMapViewOverlayOfLast()
   }
   

@@ -44,7 +44,6 @@ final class BottomSheetView: PassThroughView {
         cancelPinButton.isHidden = true
         mapView?.deselectAnnotation(mapView?.selectedAnnotations as? MKAnnotation, animated: true)
         mapView.removeMapViewOverlayOfLast()
-        // hiddenDetailView()
         break
       case .full:
         cancelPinButton.isHidden = false
@@ -255,14 +254,12 @@ extension BottomSheetView: LayoutSupport {
     self.addSubview(self.bottomSheetView)
     self.bottomSheetView.addSubview(proFileView)
     self.bottomSheetView.addSubview(pinDetailView)
+    self.bottomSheetView.addSubview(handlerView)
     
-    self.proFileView.addSubview(handlerView)
     self.proFileView.addSubview(proFileImageView)
+    self.proFileView.addSubview(cancelPinButton)
     
     self.handlerView.addSubview(self.barView)
-    self.handlerView.addSubview(cancelPinButton)
-    
-    //self.pinDetailView.addSubview(arButton)
   }
 
 }
@@ -289,20 +286,18 @@ extension BottomSheetView: SetupSubviewsConstraints {
     }
     
     self.handlerView.snp.makeConstraints {
-      $0.top.leading.trailing.equalTo(proFileView)
-      $0.height.equalTo(40)
+      $0.top.leading.trailing.equalTo(bottomSheetView)
+      $0.height.equalTo(28)
     }
     
     self.cancelPinButton.snp.makeConstraints {
-      $0.centerY.equalToSuperview()
-      $0.trailing.equalToSuperview().inset(5)
+      $0.top.trailing.equalTo(proFileView).inset(8)
       $0.height.width.equalTo(30)
     }
     
     self.proFileView.snp.makeConstraints {
       $0.top.leading.trailing.equalToSuperview().inset(15)
       $0.height.equalTo(UIScreen.main.bounds.height / 9)
-      //$0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
     }
     
     self.proFileImageView.snp.makeConstraints {
