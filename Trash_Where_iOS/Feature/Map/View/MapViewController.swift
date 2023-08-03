@@ -317,10 +317,6 @@ extension MapViewController: LayoutSupport {
     mapView.addSubview(userLocationButton)
   }
 
-}
-
-extension MapViewController: SetupSubviewsConstraints {
-  
   func setupSubviewsConstraints() {
     userLocationButton.snp.makeConstraints {
       $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(17)
@@ -331,7 +327,6 @@ extension MapViewController: SetupSubviewsConstraints {
     bottomSheetView.snp.makeConstraints {
       $0.edges.equalToSuperview()
     }
-    
   }
   
 }
