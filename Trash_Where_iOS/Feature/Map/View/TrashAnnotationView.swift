@@ -33,13 +33,15 @@ final class TrashAnnotationView: MKAnnotationView {
 
 class TrashAnnotation: NSObject, MKAnnotation {
   
+  var pinModel: PinModel!
   let imageType: Int?
   var coordinate: CLLocationCoordinate2D
   
-  init(imageType: Int?,
-                coordinate: CLLocationCoordinate2D) {
+  init(pinModel: PinModel, imageType: Int?) {
+    self.pinModel = pinModel
     self.imageType = imageType
-    self.coordinate = coordinate
+    self.coordinate = CLLocationCoordinate2D(latitude: pinModel.latitude,
+                                             longitude: pinModel.longitude)
     super.init()
   }
   

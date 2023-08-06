@@ -15,12 +15,22 @@ final class MapViewController: UIViewController {
 
   // MARK: - Properties
   
-  var mapView: MKMapView!
-  var locationManager = CLLocationManager()
+  static let locationManager: CLLocationManager = {
+    let locationManager = CLLocationManager()
+    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+    locationManager.distanceFilter = kCLDistanceFilterNone
+    locationManager.startUpdatingLocation()
+    locationManager.startUpdatingHeading()
+    locationManager.requestWhenInUseAuthorization()
+    return locationManager
+  }()
   var directions = [String]()
+  var pinElevationAPI = PinElevationAPI()
+  var pinModelWithElevation: [PinModel]?
   
   // MARK: - UI
   
+  var mapView: MKMapView!
   var userLocationButton: UIButton = {
     // TODO: 버튼 클릭시 색상변경
     let button = UIButton()
@@ -46,6 +56,16 @@ final class MapViewController: UIViewController {
     return bottomSheetView
   }()
   
+  //MARK: - Data
+  
+  // Sample Data
+  let pinModels = [
+    PinModel(address: "대전 동구 천동 0번길", latitude: 36.3167000, longitude: 127.4435000),
+    PinModel(address: "대전 동구 천동 1번길", latitude: 36.3178000, longitude: 127.4419000),
+    PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
+    PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
+    PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
+    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)]
   
   // MARK: - LifeCycle
   
@@ -56,21 +76,20 @@ final class MapViewController: UIViewController {
     setupMapView()
     addTarget()
     
+    addTrashAnnotation()
+    // TODO: 서버 API 통신직후 Elevation API 요청
+    //pinElevationAPI.deleagte = self
+    
+    
     configureSubviews()
     
     // TODO: 서버 API와 연결
-    addTrashAnnotation()
+    
   }
   
   func addTrashAnnotation() {
-    // Sample Data
-    let coordinate = [
-      (36.3167, 127.4435), (36.3178, 127.4419),
-      (36.3167, 127.4400), (36.3141, 127.4455),
-      (36.3198, 127.4482)]
-    
-    _=coordinate.map {
-      mapView.addAnnotation(TrashAnnotation(imageType: 0, coordinate: CLLocationCoordinate2D(latitude: $0.0, longitude: $0.1)))
+    _=pinModels.map {
+      mapView.addAnnotation(TrashAnnotation(pinModel: $0,imageType: 0))
     }
   }
   
@@ -134,12 +153,22 @@ final class MapViewController: UIViewController {
   
 }
 
+// MARK: - BottomSheetViewDelegate
+
 extension MapViewController: BottomSheetViewDelegate {
   
+  // TODO: pin을 선택했을 떄만 ARButton 노출
   func didTapARButton() {
-    let ARNaviView = ARNaviViewController()
-    ARNaviView.modalPresentationStyle = .fullScreen
-    self.present(ARNaviView, animated: true)
+    let ARNaviVC = ARNaviViewController()
+    pinElevationAPI.deleagte = ARNaviVC
+    let selectedTrashPinModel = (mapView.selectedAnnotations.first as! TrashAnnotation).pinModel
+    
+    ARNaviVC.arPinModel = selectedTrashPinModel
+    ARNaviVC.modalPresentationStyle = .fullScreen
+    
+    pinElevationAPI.fetchElevation(pinModels: pinModels)
+    
+    self.present(ARNaviVC, animated: true)
   }
   
 }
@@ -191,6 +220,7 @@ extension MapViewController: MKMapViewDelegate {
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5
+      annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
@@ -264,18 +294,12 @@ extension MapViewController: MKMapViewDelegate {
 }
 
 // MARK: - CLLocationManagerDelegate
-// TODO: 추후 CoreLocation Feature 나눠야됨
 
 extension MapViewController: CLLocationManagerDelegate {
   
   // CLLocation에 대한 초기 설정
   func setupCLLocationManager() {
-    locationManager.delegate = self
-    locationManager.requestWhenInUseAuthorization()
-    locationManager.desiredAccuracy = kCLLocationAccuracyBest
-    locationManager.distanceFilter = kCLDistanceFilterNone
-    locationManager.startUpdatingLocation()
-    locationManager.startUpdatingHeading()
+    MapViewController.locationManager.delegate = self
   }
   
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -290,7 +314,7 @@ extension MapViewController: CLLocationManagerDelegate {
     mapView.setRegion(region, animated: false)
     
     // 위치 업데이트 종료
-    locationManager.stopUpdatingLocation()
+    MapViewController.locationManager.stopUpdatingLocation()
   }
   
   // 사용자의 방향에따라 annotaion의 방향을 변경

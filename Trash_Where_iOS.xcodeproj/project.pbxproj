@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		4B17E1A32A77DB3100DA8D9D /* ARNaviViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */; };
 		4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */; };
+		4B4211492A7CEEBD00154243 /* PinModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4211482A7CEEBD00154243 /* PinModel.swift */; };
+		4B42114E2A7D4AB400154243 /* ARCL in Frameworks */ = {isa = PBXBuildFile; productRef = 4B42114D2A7D4AB400154243 /* ARCL */; };
+		4B5B939E2A7E7A5D003EE323 /* PinElevationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B939D2A7E7A5D003EE323 /* PinElevationAPI.swift */; };
+		4B5B93A02A7E7CFF003EE323 /* PinElevationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B939F2A7E7CFF003EE323 /* PinElevationData.swift */; };
 		4B62FB3A2A794BFE001808ED /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B62FB392A794BFE001808ED /* ARKit.framework */; };
 		4B62FB3C2A794C0A001808ED /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B62FB3B2A794C0A001808ED /* SceneKit.framework */; };
 		4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B72EA102A5DAB5F0077C728 /* AppDelegate.swift */; };
@@ -54,6 +58,10 @@
 /* Begin PBXFileReference section */
 		4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNaviViewController.swift; sourceTree = "<group>"; };
 		4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewDelegate.swift; sourceTree = "<group>"; };
+		4B4211482A7CEEBD00154243 /* PinModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinModel.swift; sourceTree = "<group>"; };
+		4B5B939D2A7E7A5D003EE323 /* PinElevationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinElevationAPI.swift; sourceTree = "<group>"; };
+		4B5B939F2A7E7CFF003EE323 /* PinElevationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinElevationData.swift; sourceTree = "<group>"; };
+		4B5B93B42A7FDF9B003EE323 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		4B62FB392A794BFE001808ED /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
 		4B62FB3B2A794C0A001808ED /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		4B72EA0D2A5DAB5F0077C728 /* Trash_Where_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trash_Where_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +97,7 @@
 				4B62FB3A2A794BFE001808ED /* ARKit.framework in Frameworks */,
 				4B72EA472A5DAB890077C728 /* SnapKit in Frameworks */,
 				4B72EA442A5DAB790077C728 /* RxSwift in Frameworks */,
+				4B42114E2A7D4AB400154243 /* ARCL in Frameworks */,
 				4B72EA422A5DAB790077C728 /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,6 +134,7 @@
 		4B1511052A718B5300CDD240 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				4B4211482A7CEEBD00154243 /* PinModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -140,6 +150,8 @@
 			isa = PBXGroup;
 			children = (
 				4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */,
+				4B5B939D2A7E7A5D003EE323 /* PinElevationAPI.swift */,
+				4B5B939F2A7E7CFF003EE323 /* PinElevationData.swift */,
 			);
 			path = ARNavi;
 			sourceTree = "<group>";
@@ -210,7 +222,7 @@
 				4B72EA192A5DAB600077C728 /* Assets.xcassets */,
 				4B72EA1B2A5DAB600077C728 /* LaunchScreen.storyboard */,
 				4B72EA1E2A5DAB600077C728 /* Info.plist */,
-				4B7475C82A5F0A24005F9412 /* TabBarController.swift */,
+				4B5B93B42A7FDF9B003EE323 /* Secrets.xcconfig */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -231,6 +243,7 @@
 		4B72EA4A2A5DAD8E0077C728 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				4B7475C82A5F0A24005F9412 /* TabBarController.swift */,
 				4B72EA4B2A5DAE0C0077C728 /* LayoutSupport.swift */,
 			);
 			path = Common;
@@ -306,6 +319,7 @@
 				4B72EA412A5DAB790077C728 /* RxCocoa */,
 				4B72EA432A5DAB790077C728 /* RxSwift */,
 				4B72EA462A5DAB890077C728 /* SnapKit */,
+				4B42114D2A7D4AB400154243 /* ARCL */,
 			);
 			productName = Trash_Where_iOS;
 			productReference = 4B72EA0D2A5DAB5F0077C728 /* Trash_Where_iOS.app */;
@@ -382,6 +396,7 @@
 			packageReferences = (
 				4B72EA402A5DAB790077C728 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				4B72EA452A5DAB890077C728 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				4B42114C2A7D4AB400154243 /* XCRemoteSwiftPackageReference "ARKit-CoreLocation" */,
 			);
 			productRefGroup = 4B72EA0E2A5DAB5F0077C728 /* Products */;
 			projectDirPath = "";
@@ -434,10 +449,13 @@
 				4BFE62D82A693803003E5E31 /* TrashAnnotationView.swift in Sources */,
 				4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */,
 				4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */,
+				4B5B939E2A7E7A5D003EE323 /* PinElevationAPI.swift in Sources */,
 				4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */,
 				4B7475C92A5F0A24005F9412 /* TabBarController.swift in Sources */,
+				4B4211492A7CEEBD00154243 /* PinModel.swift in Sources */,
 				4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */,
 				4B7475CF2A5F1C2C005F9412 /* QRCodeViewController.swift in Sources */,
+				4B5B93A02A7E7CFF003EE323 /* PinElevationData.swift in Sources */,
 				4BFE62DA2A695509003E5E31 /* BottomSheetView.swift in Sources */,
 				4B72EA132A5DAB5F0077C728 /* SceneDelegate.swift in Sources */,
 			);
@@ -603,6 +621,7 @@
 		};
 		4B72EA382A5DAB600077C728 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4B5B93B42A7FDF9B003EE323 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -632,6 +651,7 @@
 		};
 		4B72EA392A5DAB600077C728 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4B5B93B42A7FDF9B003EE323 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -777,6 +797,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4B42114C2A7D4AB400154243 /* XCRemoteSwiftPackageReference "ARKit-CoreLocation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AndrewHartAR/ARKit-CoreLocation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		4B72EA402A5DAB790077C728 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift";
@@ -796,6 +824,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4B42114D2A7D4AB400154243 /* ARCL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B42114C2A7D4AB400154243 /* XCRemoteSwiftPackageReference "ARKit-CoreLocation" */;
+			productName = ARCL;
+		};
 		4B72EA412A5DAB790077C728 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4B72EA402A5DAB790077C728 /* XCRemoteSwiftPackageReference "RxSwift" */;
