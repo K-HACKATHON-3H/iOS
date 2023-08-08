@@ -13,7 +13,7 @@ struct PinModel {
   var address = ""
   var latitude: Double = 0.0
   var longitude: Double = 0.0
-  var elevation: Double = 0.0
+  var elevation: Double = 300.0
   
   init(address: String = "", latitude: Double, longitude: Double) {
     self.address = address

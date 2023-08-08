@@ -6,7 +6,6 @@
 //
 
 import ARKit_CoreLocation
-import ARKit
 import CoreLocation
 import SceneKit
 import SnapKit
@@ -33,7 +32,7 @@ class ARNaviViewController: UIViewController {
   var pinNode: SCNNode = {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
     let pinNode = pinScene.rootNode.childNode(withName: "C3_002", recursively: true)
-    pinNode!.scale = SCNVector3(x: 100, y: 100, z: 100)
+    pinNode!.scale = SCNVector3(x: 50, y: 50, z: 50)
     
     return pinNode!
   }()
@@ -91,6 +90,8 @@ extension ARNaviViewController: PinElevationAPIDelegate {
         if $0.pinID == self.arPinModel.pinID {
           let updateAltitude: CLLocationDistance = $0.elevation
           if let currentLocation = self.pinLocationNode.location {
+            
+            print("altitude: \(updateAltitude)")
             let newLocation = CLLocation(coordinate: currentLocation.coordinate, altitude: updateAltitude)
             self.pinLocationNode.location = newLocation
           }
