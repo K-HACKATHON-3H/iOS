@@ -24,11 +24,8 @@ class PinElevationAPI {
       print("PinModels is empty...")
       return
     }
-    
-//    let API_KEY = Bundle.main.object(forInfoDictionaryKey: "GOOGLE_ELEVATION_KEY") as? String
-//    print(String(describing: API_KEY))
+
     let locations = makeLocationsURL()
-//    let elevationURL = "https://maps.googleapis.com/maps/api/elevation/json?locations=\(locations)&key=AIzaSyDAXWLBP0dfV5UbHBJsa8MutoRi_zrhAMI"
     
     let elevationURL = "https://api.open-elevation.com/api/v1/lookup?locations=\(locations)"
     
@@ -81,20 +78,6 @@ class PinElevationAPI {
       let decodedData = try decoder.decode(PinElevationData.self, from: pinElevationData)
       
       var pinDatas = [PinModel]()
-      
-//      print("decodedData::parseJSON")
-//      print(decodedData.results)
-//      if decodedData.status == "OK" {
-//        _=decodedData.results.map {
-//          var pinmodel = PinModel(latitude: $0.location.lat, longitude: $0.location.lng)
-//          pinmodel.elevation = $0.elevation
-//          pinDatas.append(pinmodel)
-//
-//          print("latitude: \(pinmodel.latitude), longitude: \(pinmodel.longitude), elevation: \(pinmodel.elevation)")
-//        }
-//      } else {
-//        print("api error: \(decodedData.status)")
-//      }
       
       _=decodedData.results.map {
         var pinmodel = PinModel(latitude: $0.latitude, longitude: $0.longitude)
