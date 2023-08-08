@@ -145,7 +145,7 @@ final class BottomSheetView: PassThroughView {
     fatalError("init() has not been implemented")
   }
   
-  func addTarget() {
+  private func addTarget() {
     let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
     self.handlerView.addGestureRecognizer(panGesture)
     cancelPinButton.addTarget(self, action: #selector(cancelPin), for: .touchUpInside)
@@ -187,13 +187,13 @@ final class BottomSheetView: PassThroughView {
     )
   }
   
-  @objc func cancelPin() {
+  @objc private func cancelPin() {
     hiddenDetailView()
     self.pushDownBottomSheet()
     cancelPinButton.isHidden = true
   }
   
-  @objc func arButtonTapped() {
+  @objc private func arButtonTapped() {
     delegate?.didTapARButton()
   }
   
@@ -225,13 +225,17 @@ final class BottomSheetView: PassThroughView {
     )
   }
   
-  func showDetailView() {
-    arButton.isHidden = false
-    pinDetailView.addSubview(arButton)
-    arButton.snp.makeConstraints {
-      $0.centerX.centerY.equalToSuperview()
-      $0.height.equalTo(60)
-      $0.width.equalTo(100)
+  private func showDetailView() {
+    if !mapView.selectedAnnotations.isEmpty {
+      arButton.isHidden = false
+      pinDetailView.addSubview(arButton)
+      arButton.snp.makeConstraints {
+        $0.centerX.centerY.equalToSuperview()
+        $0.height.equalTo(60)
+        $0.width.equalTo(100)
+      }
+    } else {
+      print("no selectPin")
     }
   }
   

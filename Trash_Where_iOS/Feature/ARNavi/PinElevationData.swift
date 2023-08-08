@@ -7,22 +7,6 @@
 
 import Foundation
 
-//struct PinElevationData: Decodable {
-//  let results: [Results]
-//  let status: String
-//}
-//
-//struct Results: Decodable {
-//  let elevation: Double
-//  let location: Location
-//  let resolution: Double
-//}
-
-//struct Location: Decodable {
-//  let lat: Double
-//  let lng: Double
-//}
-
 struct PinElevationData: Decodable {
   let results: [Results]
 }

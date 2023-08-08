@@ -41,8 +41,7 @@ class PinElevationAPI {
     for i in 1..<pinAPIModels!.count {
       result.append("%7C\(pinAPIModels![i].latitude)%2C\(pinAPIModels![i].longitude)")
     }
-
-    print("makeLocationURL: \(result)")
+    
     return result
   }
   
@@ -68,8 +67,6 @@ class PinElevationAPI {
     } else {
       print("url nil")
     }
-    
-    print("performRequest...")
   }
   
   private func parseJSON(_ pinElevationData: Data) -> [PinModel]? {

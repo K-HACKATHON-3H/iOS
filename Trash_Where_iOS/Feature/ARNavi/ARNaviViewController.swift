@@ -16,6 +16,15 @@ class ARNaviViewController: UIViewController {
   // MARK: - Properties
   
   var arPinModel: PinModel!
+  let locationManager: CLLocationManager = {
+    let locationManager = CLLocationManager()
+    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+    locationManager.distanceFilter = kCLDistanceFilterNone
+    locationManager.startUpdatingLocation()
+    locationManager.startUpdatingHeading()
+    locationManager.requestWhenInUseAuthorization()
+    return locationManager
+  }()
   
   // MARK: - UI
   
@@ -28,6 +37,25 @@ class ARNaviViewController: UIViewController {
     button.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
     return button
   }()
+  let statusView: UIView = {
+    let view = UIView()
+    view.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+    return view
+  }()
+  lazy var statusLabel: UILabel = {
+    let label = UILabel()
+    label.text = arPinModel.address
+    label.font = UIFont.systemFont(ofSize: 22)
+    return label
+  }()
+  let distanceLabel: UILabel = {
+    let label = UILabel()
+    label.font = UIFont.systemFont(ofSize: 15)
+    label.textColor = .lightGray
+    return label
+  }()
+  
+  // AR UI
   var pinLocationNode: LocationNode!
   var pinNode: SCNNode = {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
@@ -41,6 +69,7 @@ class ARNaviViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    locationManager.delegate = self
     
     addSCNNode()
     configureSubviews()
@@ -53,7 +82,6 @@ class ARNaviViewController: UIViewController {
   }
   
   // MARK: - Method
- 
   
   func addSCNNode() {
     let targetCoordinate = CLLocationCoordinate2D(
@@ -107,6 +135,17 @@ extension ARNaviViewController: PinElevationAPIDelegate {
   }
   
 }
+
+extension ARNaviViewController: CLLocationManagerDelegate {
+  
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    guard let currentLocation = locations.last else { return }
+    
+    let distanceInMeters = currentLocation.distance(from: CLLocation(latitude: arPinModel.latitude, longitude: arPinModel.longitude))
+    distanceLabel.text = "\(Int(distanceInMeters))m"
+  }
+  
+}
   
   // MARK: - LayoutSupport
   
@@ -120,6 +159,10 @@ extension ARNaviViewController: LayoutSupport {
   func addSubviews() {
     self.view.addSubview(sceneLocationView)
     self.sceneLocationView.addSubview(dismissButton)
+    sceneLocationView.addSubview(statusView)
+    
+    statusView.addSubview(statusLabel)
+    statusView.addSubview(distanceLabel)
   }
   
   func setupSubviewsConstraints() {
@@ -129,6 +172,21 @@ extension ARNaviViewController: LayoutSupport {
     
     dismissButton.snp.makeConstraints {
       $0.top.trailing.equalTo(self.view.safeAreaLayoutGuide)
+    }
+    
+    statusView.snp.makeConstraints {
+      $0.leading.trailing.bottom.equalToSuperview()
+      $0.height.equalTo(120)
+    }
+    
+    statusLabel.snp.makeConstraints {
+      $0.top.equalToSuperview().offset(15)
+      $0.leading.equalToSuperview().offset(10)
+    }
+    
+    distanceLabel.snp.makeConstraints {
+      $0.top.equalTo(statusLabel).offset(30)
+      $0.leading.equalToSuperview().offset(10)
     }
   }
   

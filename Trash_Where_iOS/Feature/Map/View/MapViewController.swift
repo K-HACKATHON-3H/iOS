@@ -220,7 +220,7 @@ extension MapViewController: MKMapViewDelegate {
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5
-      annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
+      //annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
