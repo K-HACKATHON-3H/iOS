@@ -15,34 +15,21 @@ protocol PinElevationAPIDelegate {
 class PinElevationAPI {
   
   var deleagte: PinElevationAPIDelegate?
-  var pinAPIModels: [PinModel]?
+  var pinAPIModel: PinModel?
   
-  public func fetchElevation(pinModels: [PinModel]) {
-    self.pinAPIModels = pinModels
+  public func fetchElevation(pinModel: PinModel) {
+    self.pinAPIModel = pinModel
     // TODO: API 비용 최적화작업
-    if pinAPIModels == nil || pinAPIModels!.isEmpty {
+    if pinAPIModel == nil {
       print("PinModels is empty...")
       return
     }
 
-    let locations = makeLocationsURL()
+    let locations = "\(pinModel.latitude)%2C\(pinModel.longitude)"
     
     let elevationURL = "https://api.open-elevation.com/api/v1/lookup?locations=\(locations)"
     
     performRequest(with: elevationURL)
-  }
-  
-  private func makeLocationsURL() -> String {
-    var result = ""
-    result.append("\(pinAPIModels![0].latitude)%2C\(pinAPIModels![0].longitude)")
-    if pinAPIModels!.count == 1 {
-      return result
-    }
-    for i in 1..<pinAPIModels!.count {
-      result.append("%7C\(pinAPIModels![i].latitude)%2C\(pinAPIModels![i].longitude)")
-    }
-    
-    return result
   }
   
   private func performRequest(with urlString: String) {

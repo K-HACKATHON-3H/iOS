@@ -166,7 +166,8 @@ extension MapViewController: BottomSheetViewDelegate {
     ARNaviVC.arPinModel = selectedTrashPinModel
     ARNaviVC.modalPresentationStyle = .fullScreen
     
-    pinElevationAPI.fetchElevation(pinModels: pinModels)
+    // Elevation API Request
+    pinElevationAPI.fetchElevation(pinModel: selectedTrashPinModel!)
     
     self.present(ARNaviVC, animated: true)
   }

@@ -6,6 +6,7 @@
 //
 
 import ARKit_CoreLocation
+import ARKit
 import CoreLocation
 import SceneKit
 import SnapKit
@@ -60,8 +61,22 @@ class ARNaviViewController: UIViewController {
   var pinNode: SCNNode = {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
     let pinNode = pinScene.rootNode.childNode(withName: "C3_002", recursively: true)
-    pinNode!.scale = SCNVector3(x: 50, y: 50, z: 50)
+    pinNode!.scale = SCNVector3(x: 100, y: 100, z: 100)
+    let material = SCNMaterial()
+    material.diffuse.contents = UIColor.red
+    material.specular.contents = UIColor.white
+    material.shininess = 50.0
     
+    let light = SCNLight()
+    light.type = .IES
+    light.intensity = 5000
+
+    let lightNode = SCNNode()
+    lightNode.light = light
+    lightNode.position = SCNVector3(x: -100, y: 200, z: -100)
+
+    pinNode?.addChildNode(lightNode)
+    pinNode?.geometry?.materials = [material]
     return pinNode!
   }()
   
@@ -86,15 +101,11 @@ class ARNaviViewController: UIViewController {
   func addSCNNode() {
     let targetCoordinate = CLLocationCoordinate2D(
       latitude: arPinModel.latitude, longitude: arPinModel.longitude)
-    // TODO: location의 고도
     let location = CLLocation(coordinate: targetCoordinate, altitude: 0)
     
-    //let node = createPinNode()
     pinLocationNode = LocationNode(location: location)
-    
     pinLocationNode.addChildNode(pinNode)
     sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: pinLocationNode)
-    
     
     sceneLocationView.run()
   }
