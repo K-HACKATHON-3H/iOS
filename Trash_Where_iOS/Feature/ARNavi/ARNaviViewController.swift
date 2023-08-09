@@ -61,7 +61,7 @@ class ARNaviViewController: UIViewController {
   var pinNode: SCNNode = {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
     let pinNode = pinScene.rootNode.childNode(withName: "C3_002", recursively: true)
-    pinNode!.scale = SCNVector3(x: 100, y: 100, z: 100)
+    pinNode!.scale = SCNVector3(x: 30, y: 30, z: 30)
     let material = SCNMaterial()
     material.diffuse.contents = UIColor.red
     material.specular.contents = UIColor.white
@@ -71,11 +71,16 @@ class ARNaviViewController: UIViewController {
     light.type = .IES
     light.intensity = 5000
 
-    let lightNode = SCNNode()
-    lightNode.light = light
-    lightNode.position = SCNVector3(x: -100, y: 200, z: -100)
+    let lightFrontNode = SCNNode()
+    lightFrontNode.light = light
+    lightFrontNode.position = SCNVector3(x: -100, y: 200, z: -100)
+    
+    let lightBackNode = SCNNode()
+    lightBackNode.light = light
+    lightBackNode.position = SCNVector3(x: 100, y: 200, z: 100)
 
-    pinNode?.addChildNode(lightNode)
+    pinNode?.addChildNode(lightFrontNode)
+    pinNode?.addChildNode(lightBackNode)
     pinNode?.geometry?.materials = [material]
     return pinNode!
   }()

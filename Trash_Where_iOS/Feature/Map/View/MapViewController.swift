@@ -65,7 +65,9 @@ final class MapViewController: UIViewController {
     PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
-    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)]
+    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)
+    ]
+  //PinModel(address: "집", latitude: 36.315474, longitude: 127.443231)
   
   // MARK: - LifeCycle
   
@@ -77,9 +79,6 @@ final class MapViewController: UIViewController {
     addTarget()
     
     addTrashAnnotation()
-    // TODO: 서버 API 통신직후 Elevation API 요청
-    //pinElevationAPI.deleagte = self
-    
     
     configureSubviews()
     
@@ -161,13 +160,19 @@ extension MapViewController: BottomSheetViewDelegate {
   func didTapARButton() {
     let ARNaviVC = ARNaviViewController()
     pinElevationAPI.deleagte = ARNaviVC
-    let selectedTrashPinModel = (mapView.selectedAnnotations.first as! TrashAnnotation).pinModel
     
-    ARNaviVC.arPinModel = selectedTrashPinModel
-    ARNaviVC.modalPresentationStyle = .fullScreen
-    
+    guard mapView.selectedAnnotations.first is TrashAnnotation else {
+      let alert = UIAlertController(title: "⚠️ 주의!", message: "쓰레기통의 위치를 선택해주세요!", preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+      present(alert, animated: true)
+      return }
+    let selectedTrashPinModel = (mapView.selectedAnnotations.first as? TrashAnnotation)!.pinModel
+     
     // Elevation API Request
     pinElevationAPI.fetchElevation(pinModel: selectedTrashPinModel!)
+    
+    ARNaviVC.arPinModel = selectedTrashPinModel!
+    ARNaviVC.modalPresentationStyle = .fullScreen
     
     self.present(ARNaviVC, animated: true)
   }
