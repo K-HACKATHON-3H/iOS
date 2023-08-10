@@ -69,18 +69,21 @@ class ARNaviViewController: UIViewController {
     
     let light = SCNLight()
     light.type = .IES
-    light.intensity = 5000
+    light.intensity = 2000
 
     let lightFrontNode = SCNNode()
     lightFrontNode.light = light
-    lightFrontNode.position = SCNVector3(x: -100, y: 200, z: -100)
+    lightFrontNode.position = SCNVector3(x: -100, y: 100, z: -100)
+    lightFrontNode.castsShadow = true
     
     let lightBackNode = SCNNode()
     lightBackNode.light = light
-    lightBackNode.position = SCNVector3(x: 100, y: 200, z: 100)
+    lightBackNode.position = SCNVector3(x: 100, y: 100, z: 100)
+    lightBackNode.castsShadow = true
 
     pinNode?.addChildNode(lightFrontNode)
     pinNode?.addChildNode(lightBackNode)
+    //pinNode?.addChildNode(planeNode)
     pinNode?.geometry?.materials = [material]
     return pinNode!
   }()
@@ -90,6 +93,9 @@ class ARNaviViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     locationManager.delegate = self
+    
+    sceneLocationView.debugOptions = [.showFeaturePoints, .showWorldOrigin]
+    sceneLocationView.autoenablesDefaultLighting = true
     
     addSCNNode()
     configureSubviews()
@@ -152,6 +158,8 @@ extension ARNaviViewController: PinElevationAPIDelegate {
   
 }
 
+// MARK: - CLLocationManagerDelegate
+
 extension ARNaviViewController: CLLocationManagerDelegate {
   
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -159,6 +167,10 @@ extension ARNaviViewController: CLLocationManagerDelegate {
     
     let distanceInMeters = currentLocation.distance(from: CLLocation(latitude: arPinModel.latitude, longitude: arPinModel.longitude))
     distanceLabel.text = "\(Int(distanceInMeters))m"
+    
+    if distanceInMeters < 50 {
+      // TODO: 리워드 지급 페이지
+    }
   }
   
 }

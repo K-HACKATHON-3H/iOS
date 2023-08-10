@@ -31,16 +31,16 @@ class TabBarController: UITabBarController {
   private func setTabBarItem() {
     mapViewController.tabBarItem =
     UITabBarItem(title: "홈", image: UIImage(systemName: "house"), tag: 0)
-    distanceRankingViewController.tabBarItem =
-    UITabBarItem(title: "거리순", image: UIImage(systemName: "arrow.up.arrow.down"), tag: 1)
+//    distanceRankingViewController.tabBarItem =
+//    UITabBarItem(title: "거리순", image: UIImage(systemName: "arrow.up.arrow.down"), tag: 1)
     qrcodeViewController.tabBarItem =
     UITabBarItem(title: "QR코드", image: UIImage(systemName: "qrcode"), tag: 2)
-    alertViewController.tabBarItem =
-    UITabBarItem(title: "알림", image: UIImage(systemName: "bell"), tag: 3)
+//    alertViewController.tabBarItem =
+//    UITabBarItem(title: "알림", image: UIImage(systemName: "bell"), tag: 3)
     profileViewController.tabBarItem =
     UITabBarItem(title: "MY", image: UIImage(systemName: "person"), tag: 4)
     
-    self.viewControllers = [mapViewController, distanceRankingViewController, qrcodeViewController, alertViewController, profileViewController]
+    self.viewControllers = [mapViewController, qrcodeViewController, profileViewController]
   }
   
 }
@@ -57,7 +57,8 @@ extension TabBarController {
     self.tabBar.frame = tabFrame
     
     self.tabBar.tintColor = .black
-    self.tabBar.layer.cornerRadius = 20
+    self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+    self.tabBar.layer.cornerRadius = 15.0
     self.tabBar.layer.masksToBounds = true
     self.tabBar.layer.borderColor = UIColor.lightGray.cgColor
     self.tabBar.layer.borderWidth = 0.4
@@ -68,20 +69,12 @@ extension TabBarController {
     if #available(iOS 15, *) {
       let appearance = UITabBarAppearance()
       appearance.configureWithOpaqueBackground()
-      appearance.backgroundColor = UIColor.white
+      appearance.backgroundColor = UIColor.lightGray
       UITabBar.appearance().standardAppearance = appearance
       UITabBar.appearance().scrollEdgeAppearance = appearance
     } else {
-      UITabBar.appearance().barTintColor = UIColor.white
+      UITabBar.appearance().barTintColor = UIColor.lightGray
     }
   }
   
 }
-
-//extension TabBarController: UITabBarControllerDelegate {
-//
-//  override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-//    tabBar.backgroundColor = .black
-//  }
-//
-//}

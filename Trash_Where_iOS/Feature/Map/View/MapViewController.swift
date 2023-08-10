@@ -65,9 +65,9 @@ final class MapViewController: UIViewController {
     PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
-    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)
-    ]
-  //PinModel(address: "집", latitude: 36.315474, longitude: 127.443231)
+    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000),
+    PinModel(address: "집", latitude: 36.315474, longitude: 127.442800)]
+  //
   
   // MARK: - LifeCycle
   
@@ -162,7 +162,7 @@ extension MapViewController: BottomSheetViewDelegate {
     pinElevationAPI.deleagte = ARNaviVC
     
     guard mapView.selectedAnnotations.first is TrashAnnotation else {
-      let alert = UIAlertController(title: "⚠️ 주의!", message: "쓰레기통의 위치를 선택해주세요!", preferredStyle: .alert)
+      let alert = UIAlertController(title: nil, message: "쓰레기통의 위치를 선택해주세요!", preferredStyle: .alert)
       alert.addAction(UIAlertAction(title: "확인", style: .cancel))
       present(alert, animated: true)
       return }
