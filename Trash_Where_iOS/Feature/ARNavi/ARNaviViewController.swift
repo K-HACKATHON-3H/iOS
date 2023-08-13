@@ -26,6 +26,7 @@ class ARNaviViewController: UIViewController {
     locationManager.requestWhenInUseAuthorization()
     return locationManager
   }()
+  var guidePointLocations = [CLLocationCoordinate2D]()
   
   // MARK: - UI
   

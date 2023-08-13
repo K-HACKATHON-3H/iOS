@@ -60,7 +60,7 @@ extension TabBarController {
     self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.tabBar.layer.cornerRadius = 15.0
     self.tabBar.layer.masksToBounds = true
-    self.tabBar.layer.borderColor = UIColor.lightGray.cgColor
+    self.tabBar.layer.borderColor = UIColor.black.cgColor
     self.tabBar.layer.borderWidth = 0.4
   }
   
@@ -69,11 +69,11 @@ extension TabBarController {
     if #available(iOS 15, *) {
       let appearance = UITabBarAppearance()
       appearance.configureWithOpaqueBackground()
-      appearance.backgroundColor = UIColor.lightGray
+      appearance.backgroundColor = UIColor.white
       UITabBar.appearance().standardAppearance = appearance
       UITabBar.appearance().scrollEdgeAppearance = appearance
     } else {
-      UITabBar.appearance().barTintColor = UIColor.lightGray
+      UITabBar.appearance().barTintColor = UIColor.white
     }
   }
   

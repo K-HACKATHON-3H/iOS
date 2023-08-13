@@ -24,9 +24,10 @@ final class MapViewController: UIViewController {
     locationManager.requestWhenInUseAuthorization()
     return locationManager
   }()
-  var directions = [String]()
+  //var directions = [String]()
   var pinElevationAPI = PinElevationAPI()
   var pinModelWithElevation: [PinModel]?
+  var guidePointLocations = [CLLocationCoordinate2D]()
   
   // MARK: - UI
   
@@ -142,12 +143,25 @@ final class MapViewController: UIViewController {
         for step in route.steps {
           print(step.instructions)
           
-          self?.directions.append(step.instructions)
         }
       }
       
       self?.mapView.addOverlay(route.polyline, level: .aboveRoads)
+      
+      self?.guidePointLocations = (self?.makeGuidePointLocations(route: route))!
     }
+  }
+  
+  private func makeGuidePointLocations(route: MKRoute) -> [CLLocationCoordinate2D] {
+    let points = route.polyline.points()
+    var locations = [CLLocationCoordinate2D]()
+    
+    for i in 0..<route.polyline.pointCount {
+      let coordinate = points[i].coordinate
+      locations.append(coordinate)
+    }
+    
+    return locations
   }
   
 }
@@ -172,6 +186,7 @@ extension MapViewController: BottomSheetViewDelegate {
     pinElevationAPI.fetchElevation(pinModel: selectedTrashPinModel!)
     
     ARNaviVC.arPinModel = selectedTrashPinModel!
+    ARNaviVC.guidePointLocations = guidePointLocations
     ARNaviVC.modalPresentationStyle = .fullScreen
     
     self.present(ARNaviVC, animated: true)
