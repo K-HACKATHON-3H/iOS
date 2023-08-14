@@ -148,7 +148,17 @@ final class MapViewController: UIViewController {
       
       self?.mapView.addOverlay(route.polyline, level: .aboveRoads)
       
-      self?.guidePointLocations = (self?.makeGuidePointLocations(route: route))!
+      if let locations = self?.makeGuidePointLocations(route: route) {
+        self?.guidePointLocations = locations
+      }
+      
+      //DebugCode
+      self?.guidePointLocations.map {
+        print($0)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = $0
+        self?.mapView.addAnnotation(annotation)
+      }
     }
   }
   
@@ -172,21 +182,29 @@ extension MapViewController: BottomSheetViewDelegate {
   
   // TODO: pin을 선택했을 떄만 ARButton 노출
   func didTapARButton() {
+    
     let ARNaviVC = ARNaviViewController()
+    print("Hi :) 1")
     pinElevationAPI.deleagte = ARNaviVC
+    print("Hi :) 2")
     
     guard mapView.selectedAnnotations.first is TrashAnnotation else {
       let alert = UIAlertController(title: nil, message: "쓰레기통의 위치를 선택해주세요!", preferredStyle: .alert)
       alert.addAction(UIAlertAction(title: "확인", style: .cancel))
       present(alert, animated: true)
       return }
+    
     let selectedTrashPinModel = (mapView.selectedAnnotations.first as? TrashAnnotation)!.pinModel
      
     // Elevation API Request
     pinElevationAPI.fetchElevation(pinModel: selectedTrashPinModel!)
     
     ARNaviVC.arPinModel = selectedTrashPinModel!
-    ARNaviVC.guidePointLocations = guidePointLocations
+    if guidePointLocations.count >= 3 {
+      self.guidePointLocations.removeFirst()
+      self.guidePointLocations.removeLast()
+      ARNaviVC.guidePointLocations = guidePointLocations
+    }
     ARNaviVC.modalPresentationStyle = .fullScreen
     
     self.present(ARNaviVC, animated: true)

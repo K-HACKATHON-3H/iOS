@@ -62,7 +62,7 @@ class ARNaviViewController: UIViewController {
   var pinNode: SCNNode = {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
     let pinNode = pinScene.rootNode.childNode(withName: "C3_002", recursively: true)
-    pinNode!.scale = SCNVector3(x: 30, y: 30, z: 30)
+    pinNode!.scale = SCNVector3(x: 25, y: 25, z: 25)
     let material = SCNMaterial()
     material.diffuse.contents = UIColor.red
     material.specular.contents = UIColor.white
@@ -88,6 +88,30 @@ class ARNaviViewController: UIViewController {
     pinNode?.geometry?.materials = [material]
     return pinNode!
   }()
+  var guidPointLocationNode: LocationNode!
+  var guidPointNode: SCNNode = {
+    let pointScene = SCNScene(named: "SceneKit_Assets.scnassets/coinclover.scn")!
+    let coinNode = pointScene.rootNode.childNode(withName: "coin", recursively: true)
+    coinNode?.scale = SCNVector3(20, 20, 20)
+    
+    let light = SCNLight()
+    light.type = .IES
+    light.intensity = 2000
+
+    let lightFrontNode = SCNNode()
+    lightFrontNode.light = light
+    lightFrontNode.position = SCNVector3(x: -100, y: 100, z: -100)
+    lightFrontNode.castsShadow = true
+    
+    let lightBackNode = SCNNode()
+    lightBackNode.light = light
+    lightBackNode.position = SCNVector3(x: 100, y: 100, z: 100)
+    lightBackNode.castsShadow = true
+    
+    coinNode?.addChildNode(lightFrontNode)
+    coinNode?.addChildNode(lightBackNode)
+    return coinNode!
+  }()
   
   //MARK: - LifeCycle
 
@@ -95,7 +119,7 @@ class ARNaviViewController: UIViewController {
     super.viewDidLoad()
     locationManager.delegate = self
     
-    sceneLocationView.debugOptions = [.showFeaturePoints, .showWorldOrigin]
+    sceneLocationView.debugOptions = [.showFeaturePoints]
     sceneLocationView.autoenablesDefaultLighting = true
     
     addSCNNode()
@@ -111,13 +135,22 @@ class ARNaviViewController: UIViewController {
   // MARK: - Method
   
   func addSCNNode() {
+    // pinNode
     let targetCoordinate = CLLocationCoordinate2D(
       latitude: arPinModel.latitude, longitude: arPinModel.longitude)
-    let location = CLLocation(coordinate: targetCoordinate, altitude: 0)
-    
-    pinLocationNode = LocationNode(location: location)
+    let pinLocation = CLLocation(coordinate: targetCoordinate, altitude: 0)
+    pinLocationNode = LocationNode(location: pinLocation)
     pinLocationNode.addChildNode(pinNode)
     sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: pinLocationNode)
+    
+    if !guidePointLocations.isEmpty {
+      print("load guidPointNode")
+      // guidPointNode // TODO: Elevation API
+      let guidPointLocation = CLLocation(coordinate: guidePointLocations[0], altitude: 60)
+      guidPointLocationNode = LocationNode(location: guidPointLocation)
+      guidPointLocationNode.addChildNode(guidPointNode)
+      sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: guidPointLocationNode)
+    }
     
     sceneLocationView.run()
   }
