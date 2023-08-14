@@ -8,8 +8,13 @@
 import Foundation
 
 protocol PinElevationAPIDelegate {
-  func didUpdateElevation(_ pinElevationAPI: PinElevationAPI, pinModel: [PinModel])
+  func didUpdateElevation(_ pinElevationAPI: PinElevationAPI, pinModel: [PinModel], type: RequestType)
   func didFailWithError(error: Error)
+}
+
+enum RequestType {
+  case pinNode
+  case coinNode
 }
 
 class PinElevationAPI {
@@ -17,7 +22,7 @@ class PinElevationAPI {
   var deleagte: PinElevationAPIDelegate?
   var pinAPIModel: PinModel?
   
-  public func fetchElevation(pinModel: PinModel) {
+  public func fetchElevation(pinModel: PinModel, type: RequestType) {
     self.pinAPIModel = pinModel
     // TODO: API 비용 최적화작업
     if pinAPIModel == nil {
@@ -29,10 +34,10 @@ class PinElevationAPI {
     
     let elevationURL = "https://api.open-elevation.com/api/v1/lookup?locations=\(locations)"
     
-    performRequest(with: elevationURL)
+    performRequest(with: elevationURL, type: type)
   }
   
-  private func performRequest(with urlString: String) {
+  private func performRequest(with urlString: String, type: RequestType) {
     if let url = URL(string: urlString) {
       let session = URLSession(configuration: .default)
       
@@ -44,7 +49,7 @@ class PinElevationAPI {
         
         if let hasData = data {
           if let parsePinModel = self.parseJSON(hasData) {
-            self.deleagte?.didUpdateElevation(self, pinModel: parsePinModel)
+            self.deleagte?.didUpdateElevation(self, pinModel: parsePinModel, type: type)
           }
         } else {
           print("data miss...")
