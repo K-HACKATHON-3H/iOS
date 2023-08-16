@@ -96,6 +96,7 @@ class ARNaviViewController: UIViewController {
     let pointScene = SCNScene(named: "SceneKit_Assets.scnassets/coinclover.scn")!
     let coinNode = pointScene.rootNode.childNode(withName: "coin", recursively: true)
     coinNode?.scale = SCNVector3(20, 20, 20)
+    coinNode?.position = SCNVector3(x: 0, y: 0.5, z: 0)
     
     let light = SCNLight()
     light.type = .IES
@@ -125,21 +126,23 @@ class ARNaviViewController: UIViewController {
     coinNode?.runAction(repeatUpDownAction)
     return coinNode!
   }()
+  var spotNode: SCNNode = {
+    let node = SCNNode()
+    let cylinderGeometry = SCNCylinder(radius: 10, height: 0.5)
+    let transparentMaterial = SCNMaterial()
+    transparentMaterial.diffuse.contents = UIColor.green
+    transparentMaterial.transparency = 0.5
+    cylinderGeometry.materials = [transparentMaterial]
+    node.geometry = cylinderGeometry
+    
+    return node
+  }()
   
   //MARK: - LifeCycle
 
   override func viewDidLoad() {
     super.viewDidLoad()
     locationManager.delegate = self
-    //pinElevationAPI.deleagte = self
-    
-    //TODO: 코드위치 조정
-//    if !guidePointLocations.isEmpty {
-//      currentCoinModel = PinModel(latitude: guidePointLocations[0].latitude,
-//                                  longitude: guidePointLocations[0].longitude)
-//      pinElevationAPI.fetchElevation(pinModel: currentCoinModel,
-//                                     type: .coinNode)
-//    }
     
     sceneLocationView.debugOptions = [.showFeaturePoints]
     sceneLocationView.autoenablesDefaultLighting = true
@@ -166,9 +169,10 @@ class ARNaviViewController: UIViewController {
     sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: pinLocationNode)
     
     if !guidePointLocations.isEmpty {
+      spotNode.addChildNode(guidCoinNode)
       let guidPointLocation = CLLocation(coordinate: guidePointLocations[0], altitude: 60)
       guidCoinLocationNode = LocationNode(location: guidPointLocation)
-      guidCoinLocationNode.addChildNode(guidCoinNode)
+      guidCoinLocationNode.addChildNode(spotNode)
       sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: guidCoinLocationNode)
     }
     
@@ -178,6 +182,9 @@ class ARNaviViewController: UIViewController {
   // MARK: - Action
   
   @objc func dismissButtonTapped() {
+    
+    
+    
     self.presentingViewController?.dismiss(animated: true)
   }
   
@@ -231,15 +238,20 @@ extension ARNaviViewController: CLLocationManagerDelegate {
     let distanceInPinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: arPinModel.latitude, longitude: arPinModel.longitude))
     distanceLabel.text = "\(Int(distanceInPinNodeOfMeters))m"
     
-    if distanceInPinNodeOfMeters < 50 {
+    if distanceInPinNodeOfMeters < 20 { // 쓰레기통 도착!
       // TODO: 리워드 지급 페이지
+      if let tabVC = self.presentingViewController as? UITabBarController {
+        if let mapVC = tabVC.selectedViewController as? MapViewController {
+          mapVC.presentRewardPage()
+        }
+      }
     }
     
     guard !guidePointLocations.isEmpty else { return }
     let coinLatitude = guidePointLocations[guidePointIndex].latitude
     let coinLongitude = guidePointLocations[guidePointIndex].longitude
     let distanceInCoinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: coinLatitude, longitude: coinLongitude))
-    if distanceInCoinNodeOfMeters < 10 {
+    if distanceInCoinNodeOfMeters < 20 {
       guidePointIndex += 1
       // TODO: Point 리워드 지급
       
@@ -247,7 +259,9 @@ extension ARNaviViewController: CLLocationManagerDelegate {
         guidCoinLocationNode.location = CLLocation(coordinate: guidePointLocations[guidePointIndex], altitude: 60)
       } else {
         // 마지막 node이니 더이상 node를 추가할 필요가 없음
-        guidCoinNode.removeFromParentNode()
+        
+        //guidCoinLocationNode.removeFromParentNode()
+        sceneLocationView.removeLocationNode(locationNode: guidCoinLocationNode)
       }
     }
     

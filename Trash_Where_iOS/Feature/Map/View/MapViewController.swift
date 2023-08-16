@@ -24,7 +24,7 @@ final class MapViewController: UIViewController {
     locationManager.requestWhenInUseAuthorization()
     return locationManager
   }()
-  //var directions = [String]()
+  var ARNaviVC: ARNaviViewController?
   var pinElevationAPI = PinElevationAPI()
   var pinModelWithElevation: [PinModel]?
   var guidePointLocations = [CLLocationCoordinate2D]()
@@ -179,6 +179,21 @@ final class MapViewController: UIViewController {
     return locations
   }
   
+  public func presentRewardPage() {
+    ARNaviVC?.dismiss(animated: false)
+    
+    if let tabBarController = self.tabBarController {
+      tabBarController.selectedIndex = 1
+    }
+    
+    if let tabBarController = self.tabBarController,
+       let tabVC = tabBarController.selectedViewController {
+      if let QRVC = tabVC as? QRCodeViewController {
+        QRVC.presentRewardVC()
+      }
+    }
+  }
+  
 }
 
 // MARK: - BottomSheetViewDelegate
@@ -187,7 +202,7 @@ extension MapViewController: BottomSheetViewDelegate {
   
   // TODO: pin을 선택했을 떄만 ARButton 노출
   func didTapARButton() {
-    let ARNaviVC = ARNaviViewController()
+    ARNaviVC = ARNaviViewController()
     pinElevationAPI.deleagte = ARNaviVC
     
     guard mapView.selectedAnnotations.first is TrashAnnotation else {
@@ -201,20 +216,20 @@ extension MapViewController: BottomSheetViewDelegate {
     // Elevation API Request
     pinElevationAPI.fetchElevation(pinModel: selectedTrashPinModel!, type: .pinNode)
     
-    ARNaviVC.arPinModel = selectedTrashPinModel!
+    ARNaviVC!.arPinModel = selectedTrashPinModel!
     
     if !guidePointLocations.isEmpty {
-      ARNaviVC.guidePointLocations = guidePointLocations
-      ARNaviVC.currentCoinModel = PinModel(latitude: guidePointLocations[0].latitude,
+      ARNaviVC!.guidePointLocations = guidePointLocations
+      ARNaviVC!.currentCoinModel = PinModel(latitude: guidePointLocations[0].latitude,
                                            longitude: guidePointLocations[0].longitude)
       
       // Elevation API Request
-      pinElevationAPI.fetchElevation(pinModel: ARNaviVC.currentCoinModel, type: .coinNode)
+      pinElevationAPI.fetchElevation(pinModel: ARNaviVC!.currentCoinModel, type: .coinNode)
     }
     
-    ARNaviVC.modalPresentationStyle = .fullScreen
+    ARNaviVC!.modalPresentationStyle = .fullScreen
     
-    self.present(ARNaviVC, animated: true)
+    self.present(ARNaviVC!, animated: true)
   }
   
 }

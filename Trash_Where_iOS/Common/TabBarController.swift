@@ -9,9 +9,9 @@ import UIKit
 
 class TabBarController: UITabBarController {
   
-  let mapViewController = UINavigationController(rootViewController: MapViewController())
+  let mapViewController = MapViewController()
   let distanceRankingViewController = UINavigationController(rootViewController:  DistanceRankingViewController())
-  let qrcodeViewController = UINavigationController(rootViewController: QRCodeViewController())
+  let qrcodeViewController = QRCodeViewController()
   let alertViewController = UINavigationController(rootViewController: AlertViewController())
   let profileViewController = UINavigationController(rootViewController: ProfileViewController())
   
