@@ -14,6 +14,8 @@ struct PinModel {
   var latitude: Double = 0.0
   var longitude: Double = 0.0
   var elevation: Double = 300.0
+  var distance: Int = 0
+  var bestUser: UserProfileModel?
   
   init(address: String = "", latitude: Double, longitude: Double) {
     self.address = address

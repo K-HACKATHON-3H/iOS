@@ -57,8 +57,8 @@ extension TabBarController {
     self.tabBar.frame = tabFrame
     
     self.tabBar.tintColor = .black
-    self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-    self.tabBar.layer.cornerRadius = 15.0
+//    self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+//    self.tabBar.layer.cornerRadius = 15.0
     self.tabBar.layer.masksToBounds = true
     self.tabBar.layer.borderColor = UIColor.black.cgColor
     self.tabBar.layer.borderWidth = 0.4
