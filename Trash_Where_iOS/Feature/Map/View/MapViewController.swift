@@ -219,7 +219,7 @@ extension MapViewController: BottomSheetViewDelegate {
     ARNaviVC!.arPinModel = selectedTrashPinModel!
     
     if !guidePointLocations.isEmpty {
-      ARNaviVC!.guidePointLocations = guidePointLocations
+      ARNaviVC!.coinLocations = guidePointLocations
       ARNaviVC!.currentCoinModel = PinModel(latitude: guidePointLocations[0].latitude,
                                            longitude: guidePointLocations[0].longitude)
       

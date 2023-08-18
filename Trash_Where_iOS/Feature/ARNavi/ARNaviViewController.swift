@@ -18,19 +18,10 @@ class ARNaviViewController: UIViewController {
   
   var arPinModel: PinModel!
   var currentCoinModel: PinModel!
-  let locationManager: CLLocationManager = {
-    let locationManager = CLLocationManager()
-    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-    locationManager.distanceFilter = kCLDistanceFilterNone
-    locationManager.startUpdatingLocation()
-    locationManager.startUpdatingHeading()
-    locationManager.requestWhenInUseAuthorization()
-    return locationManager
-  }()
+  let locationManager = CLLocationManager()
   var pinElevationAPI = PinElevationAPI()
-  var guidePointLocations = [CLLocationCoordinate2D]()
-  //var lastGuidePointLocations: [CLLocationCoordinate2D]?
-  var guidePointIndex = 0
+  var coinLocations = [CLLocationCoordinate2D]()
+  var coinIndex = 0
   
   // MARK: - UI
   
@@ -91,8 +82,8 @@ class ARNaviViewController: UIViewController {
     pinNode?.geometry?.materials = [material]
     return pinNode!
   }()
-  var guidCoinLocationNode: LocationNode!
-  var guidCoinNode: SCNNode = {
+  var coinLocationNode: LocationNode!
+  var coinNode: SCNNode = {
     let pointScene = SCNScene(named: "SceneKit_Assets.scnassets/coinclover.scn")!
     let coinNode = pointScene.rootNode.childNode(withName: "coin", recursively: true)
     coinNode?.scale = SCNVector3(20, 20, 20)
@@ -128,7 +119,7 @@ class ARNaviViewController: UIViewController {
   }()
   var spotNode: SCNNode = {
     let node = SCNNode()
-    let cylinderGeometry = SCNCylinder(radius: 10, height: 0.5)
+    let cylinderGeometry = SCNCylinder(radius: 15, height: 0.5)
     let transparentMaterial = SCNMaterial()
     transparentMaterial.diffuse.contents = UIColor.green
     transparentMaterial.transparency = 0.5
@@ -147,6 +138,7 @@ class ARNaviViewController: UIViewController {
     sceneLocationView.debugOptions = [.showFeaturePoints]
     sceneLocationView.autoenablesDefaultLighting = true
     
+    setLocationManager()
     addSCNNode()
     configureSubviews()
   }
@@ -154,6 +146,7 @@ class ARNaviViewController: UIViewController {
   override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
     
+    locationManager.stopUpdatingLocation()
     sceneLocationView.pause()
   }
   
@@ -168,23 +161,28 @@ class ARNaviViewController: UIViewController {
     pinLocationNode.addChildNode(pinNode)
     sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: pinLocationNode)
     
-    if !guidePointLocations.isEmpty {
-      spotNode.addChildNode(guidCoinNode)
-      let guidPointLocation = CLLocation(coordinate: guidePointLocations[0], altitude: 60)
-      guidCoinLocationNode = LocationNode(location: guidPointLocation)
-      guidCoinLocationNode.addChildNode(spotNode)
-      sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: guidCoinLocationNode)
+    if !coinLocations.isEmpty {
+      spotNode.addChildNode(coinNode)
+      let guidPointLocation = CLLocation(coordinate: coinLocations[0], altitude: 60)
+      coinLocationNode = LocationNode(location: guidPointLocation)
+      coinLocationNode!.addChildNode(spotNode)
+      sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: coinLocationNode!)
     }
     
     sceneLocationView.run()
   }
   
+  func setLocationManager() {
+    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+    locationManager.distanceFilter = kCLDistanceFilterNone
+    locationManager.startUpdatingLocation()
+    locationManager.startUpdatingHeading()
+    locationManager.requestWhenInUseAuthorization()
+  }
+  
   // MARK: - Action
   
   @objc func dismissButtonTapped() {
-    
-    
-    
     self.presentingViewController?.dismiss(animated: true)
   }
   
@@ -210,9 +208,9 @@ extension ARNaviViewController: PinElevationAPIDelegate {
         _=pinModel.map {
           if $0.pinID == self.currentCoinModel.pinID {
             let updateAltitude: CLLocationDistance = $0.elevation
-            if let currentLocation = self.guidCoinLocationNode.location {
+            if let currentLocation = self.coinLocationNode!.location {
               let newLocation = CLLocation(coordinate: currentLocation.coordinate, altitude: updateAltitude)
-              self.guidCoinLocationNode.location = newLocation
+              self.coinLocationNode!.location = newLocation
             }
           }
         }
@@ -238,8 +236,8 @@ extension ARNaviViewController: CLLocationManagerDelegate {
     let distanceInPinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: arPinModel.latitude, longitude: arPinModel.longitude))
     distanceLabel.text = "\(Int(distanceInPinNodeOfMeters))m"
     
-    if distanceInPinNodeOfMeters < 20 { // 쓰레기통 도착!
-      // TODO: 리워드 지급 페이지
+    if distanceInPinNodeOfMeters <= 20 { // 쓰레기통 도착!
+      // 리워드 지급 페이지
       if let tabVC = self.presentingViewController as? UITabBarController {
         if let mapVC = tabVC.selectedViewController as? MapViewController {
           mapVC.presentRewardPage()
@@ -247,24 +245,31 @@ extension ARNaviViewController: CLLocationManagerDelegate {
       }
     }
     
-    guard !guidePointLocations.isEmpty else { return }
-    let coinLatitude = guidePointLocations[guidePointIndex].latitude
-    let coinLongitude = guidePointLocations[guidePointIndex].longitude
-    let distanceInCoinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: coinLatitude, longitude: coinLongitude))
-    if distanceInCoinNodeOfMeters < 20 {
-      guidePointIndex += 1
-      // TODO: Point 리워드 지급
+    guard !coinLocations.isEmpty else { return }
+    guard coinLocationNode != nil else { return }
+    
+    if coinIndex < coinLocations.count {
       
-      if guidePointIndex < guidePointLocations.count {
-        guidCoinLocationNode.location = CLLocation(coordinate: guidePointLocations[guidePointIndex], altitude: 60)
-      } else {
-        // 마지막 node이니 더이상 node를 추가할 필요가 없음
+      let coinLatitude = coinLocations[coinIndex].latitude
+      let coinLongitude = coinLocations[coinIndex].longitude
+      let distanceInCoinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: coinLatitude, longitude: coinLongitude))
+      
+      if distanceInCoinNodeOfMeters < 25 { // 코인 획득!!
+        coinIndex += 1
+        // TODO: Point 리워드 지급
         
-        //guidCoinLocationNode.removeFromParentNode()
-        sceneLocationView.removeLocationNode(locationNode: guidCoinLocationNode)
+        if coinIndex < coinLocations.count {
+          coinLocationNode!.location = CLLocation(coordinate: coinLocations[coinIndex], altitude: coinLocationNode!.location.altitude)
+          
+          // coinNode Elevation API Fetch
+          pinElevationAPI.fetchElevation(pinModel: PinModel(latitude: coinLocations[coinIndex].latitude, longitude: coinLocations[coinIndex].longitude), type: .coinNode)
+          
+        } else {
+          // 마지막 node이니 더이상 node를 추가할 필요가 없음
+          sceneLocationView.removeLocationNode(locationNode: coinLocationNode!)
+        }
       }
     }
-    
   }
   
 }
