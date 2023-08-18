@@ -11,6 +11,7 @@
 		4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */; };
 		4B4211492A7CEEBD00154243 /* PinModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4211482A7CEEBD00154243 /* PinModel.swift */; };
 		4B42114E2A7D4AB400154243 /* ARCL in Frameworks */ = {isa = PBXBuildFile; productRef = 4B42114D2A7D4AB400154243 /* ARCL */; };
+		4B583E7B2A8BB0D800193C58 /* RewardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B583E7A2A8BB0D800193C58 /* RewardViewController.swift */; };
 		4B5B939E2A7E7A5D003EE323 /* PinElevationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B939D2A7E7A5D003EE323 /* PinElevationAPI.swift */; };
 		4B5B93A02A7E7CFF003EE323 /* PinElevationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B939F2A7E7CFF003EE323 /* PinElevationData.swift */; };
 		4B62FB3A2A794BFE001808ED /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B62FB392A794BFE001808ED /* ARKit.framework */; };
@@ -59,6 +60,7 @@
 		4B17E1A22A77DB3100DA8D9D /* ARNaviViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARNaviViewController.swift; sourceTree = "<group>"; };
 		4B17E1A42A77E62C00DA8D9D /* BottomSheetViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewDelegate.swift; sourceTree = "<group>"; };
 		4B4211482A7CEEBD00154243 /* PinModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinModel.swift; sourceTree = "<group>"; };
+		4B583E7A2A8BB0D800193C58 /* RewardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardViewController.swift; sourceTree = "<group>"; };
 		4B5B939D2A7E7A5D003EE323 /* PinElevationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinElevationAPI.swift; sourceTree = "<group>"; };
 		4B5B939F2A7E7CFF003EE323 /* PinElevationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinElevationData.swift; sourceTree = "<group>"; };
 		4B5B93B42A7FDF9B003EE323 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
@@ -271,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				4B7475CE2A5F1C2C005F9412 /* QRCodeViewController.swift */,
+				4B583E7A2A8BB0D800193C58 /* RewardViewController.swift */,
 			);
 			path = QRCode;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 				4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */,
 				4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */,
 				4B5B939E2A7E7A5D003EE323 /* PinElevationAPI.swift in Sources */,
+				4B583E7B2A8BB0D800193C58 /* RewardViewController.swift in Sources */,
 				4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */,
 				4B7475C92A5F0A24005F9412 /* TabBarController.swift in Sources */,
 				4B4211492A7CEEBD00154243 /* PinModel.swift in Sources */,

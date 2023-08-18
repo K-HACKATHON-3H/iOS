@@ -8,45 +8,36 @@
 import Foundation
 
 protocol PinElevationAPIDelegate {
-  func didUpdateElevation(_ pinElevationAPI: PinElevationAPI, pinModel: [PinModel])
+  func didUpdateElevation(_ pinElevationAPI: PinElevationAPI, pinModel: [PinModel], type: RequestType)
   func didFailWithError(error: Error)
+}
+
+enum RequestType {
+  case pinNode
+  case coinNode
 }
 
 class PinElevationAPI {
   
   var deleagte: PinElevationAPIDelegate?
-  var pinAPIModels: [PinModel]?
+  var pinAPIModel: PinModel?
   
-  public func fetchElevation(pinModels: [PinModel]) {
-    self.pinAPIModels = pinModels
+  public func fetchElevation(pinModel: PinModel, type: RequestType) {
+    self.pinAPIModel = pinModel
     // TODO: API 비용 최적화작업
-    if pinAPIModels == nil || pinAPIModels!.isEmpty {
+    if pinAPIModel == nil {
       print("PinModels is empty...")
       return
     }
 
-    let locations = makeLocationsURL()
+    let locations = "\(pinModel.latitude)%2C\(pinModel.longitude)"
     
     let elevationURL = "https://api.open-elevation.com/api/v1/lookup?locations=\(locations)"
     
-    performRequest(with: elevationURL)
+    performRequest(with: elevationURL, type: type)
   }
   
-  private func makeLocationsURL() -> String {
-    var result = ""
-    result.append("\(pinAPIModels![0].latitude)%2C\(pinAPIModels![0].longitude)")
-    if pinAPIModels!.count == 1 {
-      return result
-    }
-    for i in 1..<pinAPIModels!.count {
-      result.append("%7C\(pinAPIModels![i].latitude)%2C\(pinAPIModels![i].longitude)")
-    }
-
-    print("makeLocationURL: \(result)")
-    return result
-  }
-  
-  private func performRequest(with urlString: String) {
+  private func performRequest(with urlString: String, type: RequestType) {
     if let url = URL(string: urlString) {
       let session = URLSession(configuration: .default)
       
@@ -58,7 +49,7 @@ class PinElevationAPI {
         
         if let hasData = data {
           if let parsePinModel = self.parseJSON(hasData) {
-            self.deleagte?.didUpdateElevation(self, pinModel: parsePinModel)
+            self.deleagte?.didUpdateElevation(self, pinModel: parsePinModel, type: type)
           }
         } else {
           print("data miss...")
@@ -68,8 +59,6 @@ class PinElevationAPI {
     } else {
       print("url nil")
     }
-    
-    print("performRequest...")
   }
   
   private func parseJSON(_ pinElevationData: Data) -> [PinModel]? {

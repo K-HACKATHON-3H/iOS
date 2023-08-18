@@ -19,13 +19,13 @@ final class BottomSheetView: PassThroughView {
   
   private enum Const {
     static let duration = 0.5
-    static let cornerRadius = 12.0
+    static let cornerRadius = 15.0
     static let barViewTopSpacing = 5.0
     static let barViewSize = CGSize(width: UIScreen.main.bounds.width * 0.2, height: 5.0)
     static let bottomSheetRatio: (Mode) -> Double = { mode in
       switch mode {
       case .tip:
-        return 0.83 // 위에서 부터의 값 (밑으로 갈수록 값이 커짐)
+        return 0.745 // 위에서 부터의 값 (밑으로 갈수록 값이 커짐) (0.83)
       case .full:
         return 0.58
       }
@@ -145,7 +145,7 @@ final class BottomSheetView: PassThroughView {
     fatalError("init() has not been implemented")
   }
   
-  func addTarget() {
+  private func addTarget() {
     let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
     self.handlerView.addGestureRecognizer(panGesture)
     cancelPinButton.addTarget(self, action: #selector(cancelPin), for: .touchUpInside)
@@ -187,13 +187,13 @@ final class BottomSheetView: PassThroughView {
     )
   }
   
-  @objc func cancelPin() {
+  @objc private func cancelPin() {
     hiddenDetailView()
     self.pushDownBottomSheet()
     cancelPinButton.isHidden = true
   }
   
-  @objc func arButtonTapped() {
+  @objc private func arButtonTapped() {
     delegate?.didTapARButton()
   }
   
@@ -225,13 +225,17 @@ final class BottomSheetView: PassThroughView {
     )
   }
   
-  func showDetailView() {
-    arButton.isHidden = false
-    pinDetailView.addSubview(arButton)
-    arButton.snp.makeConstraints {
-      $0.centerX.centerY.equalToSuperview()
-      $0.height.equalTo(60)
-      $0.width.equalTo(100)
+  private func showDetailView() {
+    if !mapView.selectedAnnotations.isEmpty {
+      arButton.isHidden = false
+      pinDetailView.addSubview(arButton)
+      arButton.snp.makeConstraints {
+        $0.centerX.centerY.equalToSuperview()
+        $0.height.equalTo(60)
+        $0.width.equalTo(100)
+      }
+    } else {
+      print("no selectPin")
     }
   }
   

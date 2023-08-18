@@ -24,9 +24,10 @@ final class MapViewController: UIViewController {
     locationManager.requestWhenInUseAuthorization()
     return locationManager
   }()
-  var directions = [String]()
+  var ARNaviVC: ARNaviViewController?
   var pinElevationAPI = PinElevationAPI()
   var pinModelWithElevation: [PinModel]?
+  var guidePointLocations = [CLLocationCoordinate2D]()
   
   // MARK: - UI
   
@@ -65,7 +66,9 @@ final class MapViewController: UIViewController {
     PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
-    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)]
+    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000),
+    PinModel(address: "집", latitude: 36.315474, longitude: 127.442800)]
+  //
   
   // MARK: - LifeCycle
   
@@ -77,9 +80,6 @@ final class MapViewController: UIViewController {
     addTarget()
     
     addTrashAnnotation()
-    // TODO: 서버 API 통신직후 Elevation API 요청
-    //pinElevationAPI.deleagte = self
-    
     
     configureSubviews()
     
@@ -143,11 +143,54 @@ final class MapViewController: UIViewController {
         for step in route.steps {
           print(step.instructions)
           
-          self?.directions.append(step.instructions)
         }
       }
       
       self?.mapView.addOverlay(route.polyline, level: .aboveRoads)
+      
+      if let locations = self?.makeGuidePointLocations(route: route) {
+        self?.guidePointLocations = locations
+        
+        if (self?.guidePointLocations.count)! >= 3 {
+          self?.guidePointLocations.removeFirst()
+          self?.guidePointLocations.removeLast()
+        }
+      }
+      
+      //DebugCode
+      self?.guidePointLocations.map {
+        print($0)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = $0
+        self?.mapView.addAnnotation(annotation)
+      }
+    }
+  }
+  
+  private func makeGuidePointLocations(route: MKRoute) -> [CLLocationCoordinate2D] {
+    let points = route.polyline.points()
+    var locations = [CLLocationCoordinate2D]()
+    
+    for i in 0..<route.polyline.pointCount {
+      let coordinate = points[i].coordinate
+      locations.append(coordinate)
+    }
+    
+    return locations
+  }
+  
+  public func presentRewardPage() {
+    ARNaviVC?.dismiss(animated: false)
+    
+    if let tabBarController = self.tabBarController {
+      tabBarController.selectedIndex = 1
+    }
+    
+    if let tabBarController = self.tabBarController,
+       let tabVC = tabBarController.selectedViewController {
+      if let QRVC = tabVC as? QRCodeViewController {
+        QRVC.presentRewardVC()
+      }
     }
   }
   
@@ -159,16 +202,34 @@ extension MapViewController: BottomSheetViewDelegate {
   
   // TODO: pin을 선택했을 떄만 ARButton 노출
   func didTapARButton() {
-    let ARNaviVC = ARNaviViewController()
+    ARNaviVC = ARNaviViewController()
     pinElevationAPI.deleagte = ARNaviVC
-    let selectedTrashPinModel = (mapView.selectedAnnotations.first as! TrashAnnotation).pinModel
     
-    ARNaviVC.arPinModel = selectedTrashPinModel
-    ARNaviVC.modalPresentationStyle = .fullScreen
+    guard mapView.selectedAnnotations.first is TrashAnnotation else {
+      let alert = UIAlertController(title: nil, message: "쓰레기통의 위치를 선택해주세요!", preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+      present(alert, animated: true)
+      return }
     
-    pinElevationAPI.fetchElevation(pinModels: pinModels)
+    let selectedTrashPinModel = (mapView.selectedAnnotations.first as? TrashAnnotation)!.pinModel
     
-    self.present(ARNaviVC, animated: true)
+    // Elevation API Request
+    pinElevationAPI.fetchElevation(pinModel: selectedTrashPinModel!, type: .pinNode)
+    
+    ARNaviVC!.arPinModel = selectedTrashPinModel!
+    
+    if !guidePointLocations.isEmpty {
+      ARNaviVC!.coinLocations = guidePointLocations
+      ARNaviVC!.currentCoinModel = PinModel(latitude: guidePointLocations[0].latitude,
+                                           longitude: guidePointLocations[0].longitude)
+      
+      // Elevation API Request
+      pinElevationAPI.fetchElevation(pinModel: ARNaviVC!.currentCoinModel, type: .coinNode)
+    }
+    
+    ARNaviVC!.modalPresentationStyle = .fullScreen
+    
+    self.present(ARNaviVC!, animated: true)
   }
   
 }
@@ -220,7 +281,7 @@ extension MapViewController: MKMapViewDelegate {
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5
-      annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
+      //annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
