@@ -25,9 +25,9 @@ final class BottomSheetView: PassThroughView {
     static let bottomSheetRatio: (Mode) -> Double = { mode in
       switch mode {
       case .tip:
-        return 0.745 // 위에서 부터의 값 (밑으로 갈수록 값이 커짐) (0.83)
+        return 0.741 // 위에서 부터의 값 (밑으로 갈수록 값이 커짐) (0.83)
       case .full:
-        return 0.58
+        return 0.55
       }
     }
     static let bottomSheetYPosition: (Mode) -> Double = { mode in
@@ -39,6 +39,7 @@ final class BottomSheetView: PassThroughView {
   
   // test USerProperties
   let userProfileModel = UserProfileModel(Image: UIImage(named: "profileImage1")!, name: "iOS개발자 이치훈", point: 2500, topPercent: 34.61, todaypoint: 1)
+  
   
   var mode: Mode = .tip {
     didSet {
@@ -64,6 +65,7 @@ final class BottomSheetView: PassThroughView {
   }
   var mapView: MKMapView!
   weak var delegate: BottomSheetViewDelegate?
+  var trashDistance: Int = 197
   
   // MARK: - UI
   
@@ -118,19 +120,30 @@ final class BottomSheetView: PassThroughView {
   lazy var profileNameLabel: UILabel = {
     let label = UILabel()
     label.text = userProfileModel.name
-    label.font = UIFont.boldSystemFont(ofSize: 17)
+    label.font = UIFont.boldSystemFont(ofSize: 20)
     label.textColor = .white
     return label
   }()
-  let todaysPointView: UIView = {
-    let view = UIView()
-    view.layer.borderColor = UIColor.white.cgColor
-    view.layer.borderWidth = 2
-    view.layer.cornerRadius = 5
-    return view
+//  let todaysPointView: UIView = {
+//    let view = UIView()
+//    view.layer.borderColor = UIColor.white.cgColor
+//    view.layer.borderWidth = 2
+//    view.layer.cornerRadius = 5
+//    return view
+//  }()
+  let profilePointLabel: UILabel = {
+    let label = UILabel()
+    label.text = "2500P"
+    label.textColor = .white
+    label.font = .boldSystemFont(ofSize: 15)
+    return label
   }()
   
   // pinDetailView
+  let pinDetailContainView: UIView = {
+    let view = UIView()
+    return view
+  }()
   let pinDetailView: UIView = {
     let view = UIView()
     view.backgroundColor = .clear
@@ -152,7 +165,48 @@ final class BottomSheetView: PassThroughView {
   }()
   lazy var trashAddressLabel:UILabel = {
     let label = UILabel()
-    label.text = "대전 동구 천동 5번길"
+    label.text = "대한민국 대전광역시 동구 효동 148-9"
+    label.textColor = .black
+    return label
+  }()
+  lazy var trashDistanceLabel: UILabel = {
+    let label = UILabel()
+    label.text = "\(trashDistance)m"
+    label.font = .boldSystemFont(ofSize: 20)
+    label.textColor = .black
+    return label
+  }()
+  
+  // pinRankingView
+  let pinRankingView: UIView = {
+    let view = UIView()
+    return view
+  }()
+  let titleLabel: UILabel = {
+    let label = UILabel()
+    label.text = "최고 이용 유저"
+    label.font = .boldSystemFont(ofSize: 20)
+    label.textColor = .black
+    return label
+  }()
+  lazy var firstUserImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.image = self.userProfileModel.Image
+    imageView.clipsToBounds = true
+    imageView.layer.cornerRadius = 20
+    return imageView
+  }()
+  let firstUserNameLabel: UILabel = {
+    let label = UILabel()
+    label.text = "iOS개발자 이치훈"
+    label.font = .boldSystemFont(ofSize: 15)
+    label.textColor = .black
+    return label
+  }()
+  let firstUserHasPointLabel: UILabel = {
+    let label = UILabel()
+    label.text = "2500P"
+    label.textColor = .black
     return label
   }()
   
@@ -290,16 +344,25 @@ extension BottomSheetView: LayoutSupport {
   func addSubviews() {
     self.addSubview(self.bottomSheetView)
     self.bottomSheetView.addSubview(proFileView)
-    self.bottomSheetView.addSubview(pinDetailView)
     self.bottomSheetView.addSubview(handlerView)
+    self.bottomSheetView.addSubview(pinDetailContainView)
     
     self.proFileView.addSubview(proFileImageView)
     self.proFileView.addSubview(profileNameLabel)
-    self.proFileView.addSubview(todaysPointView)
+    //self.proFileView.addSubview(todaysPointView)
     self.proFileView.addSubview(cancelPinButton)
+    self.proFileView.addSubview(profilePointLabel)
     
+    self.pinDetailContainView.addSubview(pinDetailView)
     self.pinDetailView.addSubview(trashImageView)
     self.pinDetailView.addSubview(trashAddressLabel)
+    self.pinDetailView.addSubview(trashDistanceLabel)
+    
+    self.pinDetailContainView.addSubview(pinRankingView)
+    self.pinRankingView.addSubview(titleLabel)
+    self.pinRankingView.addSubview(firstUserImageView)
+    self.pinRankingView.addSubview(firstUserNameLabel)
+    self.pinRankingView.addSubview(firstUserHasPointLabel)
     
     self.handlerView.addSubview(self.barView)
   }
@@ -332,6 +395,7 @@ extension BottomSheetView: SetupSubviewsConstraints {
       $0.height.equalTo(28)
     }
     
+    // profile contraint
     self.cancelPinButton.snp.makeConstraints {
       $0.top.trailing.equalTo(proFileView).inset(8)
       $0.height.width.equalTo(30)
@@ -349,21 +413,31 @@ extension BottomSheetView: SetupSubviewsConstraints {
     }
     
     self.profileNameLabel.snp.makeConstraints {
-      $0.top.equalToSuperview().offset(17)
+      $0.top.equalToSuperview().offset(18)
       $0.leading.equalTo(proFileImageView.snp.trailing).offset(10)
     }
     
-    self.todaysPointView.snp.makeConstraints {
-      $0.top.equalTo(profileNameLabel.snp.bottom).offset(7)
-      $0.leading.equalTo(proFileImageView.snp.trailing).offset(10)
-      $0.height.equalTo(30)
-      $0.width.equalTo(200)
+//    self.todaysPointView.snp.makeConstraints {
+//      $0.top.equalTo(profileNameLabel.snp.bottom).offset(7)
+//      $0.leading.equalTo(proFileImageView.snp.trailing).offset(10)
+//      $0.height.equalTo(30)
+//      $0.width.equalTo(200)
+//    }
+    
+    self.profilePointLabel.snp.makeConstraints {
+      $0.centerY.equalTo(profileNameLabel.snp.centerY).offset(3)
+      $0.leading.equalTo(profileNameLabel.snp.trailing).offset(10)
     }
     
-    self.pinDetailView.snp.makeConstraints {
+    self.pinDetailContainView.snp.makeConstraints {
       $0.top.equalTo(proFileView.snp.bottom)
       $0.leading.trailing.equalToSuperview()
       $0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+    }
+    
+    self.pinDetailView.snp.makeConstraints {
+      $0.top.leading.trailing.equalToSuperview()
+      $0.height.equalTo(70)
     }
     
     self.trashImageView.snp.makeConstraints {
@@ -373,11 +447,41 @@ extension BottomSheetView: SetupSubviewsConstraints {
     }
     
     self.trashAddressLabel.snp.makeConstraints {
-      //$0.top.equalToSuperview().offset(20)
-      $0.centerY.equalTo(trashImageView.snp.centerY)
+      $0.top.equalToSuperview().offset(20)
       $0.leading.equalTo(trashImageView.snp.trailing).offset(10)
     }
     
+    self.trashDistanceLabel.snp.makeConstraints {
+      $0.leading.equalTo(trashImageView.snp.trailing).offset(10)
+      $0.top.equalTo(trashAddressLabel.snp.bottom).offset(1)
+    }
+    
+    self.pinRankingView.snp.makeConstraints {
+      $0.top.equalTo(pinDetailView.snp.bottom)
+      $0.leading.trailing.equalToSuperview()
+      $0.bottom.equalToSuperview()
+    }
+    
+    self.titleLabel.snp.makeConstraints {
+      $0.top.equalToSuperview().offset(10)
+      $0.leading.equalToSuperview().offset(35)
+    }
+    
+    self.firstUserImageView.snp.makeConstraints {
+      $0.top.equalTo(titleLabel.snp.bottom).offset(5)
+      $0.leading.equalToSuperview().offset(35)
+      $0.height.width.equalTo(40)
+    }
+    
+    self.firstUserNameLabel.snp.makeConstraints {
+      $0.leading.equalTo(firstUserImageView.snp.trailing).offset(10)
+      $0.centerY.equalTo(firstUserImageView.snp.centerY)
+    }
+    
+    self.firstUserHasPointLabel.snp.makeConstraints {
+      $0.centerY.equalTo(firstUserNameLabel).offset(3)
+      $0.trailing.equalToSuperview().inset(25)
+    }
   }
 
 }

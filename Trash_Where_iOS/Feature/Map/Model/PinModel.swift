@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct PinModel {
+class PinModel {
   
   var pinID: String
   var address = ""
   var latitude: Double = 0.0
   var longitude: Double = 0.0
-  var elevation: Double = 300.0
+  var elevation: Double = 60.0
   var distance: Int = 0
   var bestUser: UserProfileModel?
   
@@ -22,6 +22,10 @@ struct PinModel {
     self.latitude = latitude
     self.longitude = longitude
     self.pinID = "\(latitude)" + "\(longitude)"
+  }
+  
+  func setDistance(_ dis: Int) {
+    self.distance = dis
   }
   
 }

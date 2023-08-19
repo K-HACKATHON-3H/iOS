@@ -56,14 +56,13 @@ final class MapViewController: UIViewController {
   //MARK: - Data
   
   // Sample Data
-  let pinModels = [
+  var pinModels = [
     PinModel(address: "대전 동구 천동 0번길", latitude: 36.3167000, longitude: 127.4435000),
     PinModel(address: "대전 동구 천동 1번길", latitude: 36.3178000, longitude: 127.4419000),
     PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
-    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000),
-    PinModel(address: "집", latitude: 36.315474, longitude: 127.442800)]
+    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)]
   //
   
   // MARK: - LifeCycle
@@ -159,12 +158,12 @@ final class MapViewController: UIViewController {
       }
       
       //DebugCode
-      self?.guidePointLocations.map {
-        print($0)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = $0
-        self?.mapView.addAnnotation(annotation)
-      }
+//      self?.guidePointLocations.map {
+//        print($0)
+//        let annotation = MKPointAnnotation()
+//        annotation.coordinate = $0
+//        self?.mapView.addAnnotation(annotation)
+//      }
     }
   }
   

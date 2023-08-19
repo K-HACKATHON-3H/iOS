@@ -638,6 +638,7 @@
 				DEVELOPMENT_TEAM = GHGPAZGBBT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = /Users/ichihun/Trash_Where_iOS/Trash_Where_iOS/Support/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "쓰웨어";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -668,6 +669,7 @@
 				DEVELOPMENT_TEAM = GHGPAZGBBT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = /Users/ichihun/Trash_Where_iOS/Trash_Where_iOS/Support/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "쓰웨어";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
