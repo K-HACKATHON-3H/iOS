@@ -33,21 +33,17 @@ final class MapViewController: UIViewController {
   
   var mapView: MKMapView!
   var userLocationButton: UIButton = {
-    // TODO: 버튼 클릭시 색상변경
     let button = UIButton()
-    let userLocationImageView = UIImageView(image: UIImage(named: "GPSemoji"))
     button.backgroundColor = .white
     button.layer.cornerRadius = 20
     button.layer.shadowColor = UIColor.black.cgColor
     button.layer.shadowOffset = CGSize(width: 0, height: 2)
     button.layer.shadowOpacity = 0.5
     button.layer.shadowRadius = 3
-    button.addSubview(userLocationImageView)
-    userLocationImageView.snp.makeConstraints {
-      $0.edges.equalToSuperview().inset(8)
-    }
     return button
   }()
+  let userLocationImageView = UIImageView(image: UIImage(named: "GPSemoji"))
+  
   lazy var bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
     bottomSheetView.bottomSheetColor = .lightGray
@@ -100,10 +96,11 @@ final class MapViewController: UIViewController {
 // MARK: - Action
   
   @objc func setMapRegion() {
+    self.userLocationImageView.image = self.userLocationImageView.image?.withTintColor(.systemBlue)
+    
     var coordiCenterLa = mapView.userLocation.coordinate.latitude
     let coordiCenterLo = mapView.userLocation.coordinate.longitude
     coordiCenterLa -= 0.001
-    
     let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
@@ -111,6 +108,10 @@ final class MapViewController: UIViewController {
     
     bottomSheetView.hiddenDetailView()
     mapView.removeMapViewOverlayOfLast()
+   
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      self.userLocationImageView.image = self.userLocationImageView.image?.withTintColor(.black)
+    }
   }
   
   // MARK: - Method
@@ -400,6 +401,8 @@ extension MapViewController: LayoutSupport {
     self.view.addSubview(mapView)
     self.view.addSubview(self.bottomSheetView)
     mapView.addSubview(userLocationButton)
+    
+    self.userLocationButton.addSubview(userLocationImageView)
   }
 
   func setupSubviewsConstraints() {
@@ -411,6 +414,10 @@ extension MapViewController: LayoutSupport {
     
     bottomSheetView.snp.makeConstraints {
       $0.edges.equalToSuperview()
+    }
+    
+    self.userLocationImageView.snp.makeConstraints {
+      $0.edges.equalToSuperview().inset(8)
     }
   }
   
