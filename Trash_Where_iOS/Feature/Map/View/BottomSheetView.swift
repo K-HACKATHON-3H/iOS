@@ -27,7 +27,7 @@ final class BottomSheetView: PassThroughView {
       case .tip:
         return 0.741 // 위에서 부터의 값 (밑으로 갈수록 값이 커짐) (0.83)
       case .full:
-        return 0.55
+        return 0.65 // 0.55
       }
     }
     static let bottomSheetYPosition: (Mode) -> Double = { mode in
@@ -178,37 +178,37 @@ final class BottomSheetView: PassThroughView {
   }()
   
   // pinRankingView
-  let pinRankingView: UIView = {
-    let view = UIView()
-    return view
-  }()
-  let titleLabel: UILabel = {
-    let label = UILabel()
-    label.text = "최고 이용 유저"
-    label.font = .boldSystemFont(ofSize: 20)
-    label.textColor = .black
-    return label
-  }()
-  lazy var firstUserImageView: UIImageView = {
-    let imageView = UIImageView()
-    imageView.image = self.userProfileModel.Image
-    imageView.clipsToBounds = true
-    imageView.layer.cornerRadius = 20
-    return imageView
-  }()
-  let firstUserNameLabel: UILabel = {
-    let label = UILabel()
-    label.text = "iOS개발자 이치훈"
-    label.font = .boldSystemFont(ofSize: 15)
-    label.textColor = .black
-    return label
-  }()
-  let firstUserHasPointLabel: UILabel = {
-    let label = UILabel()
-    label.text = "2500P"
-    label.textColor = .black
-    return label
-  }()
+//  let pinRankingView: UIView = {
+//    let view = UIView()
+//    return view
+//  }()
+//  let titleLabel: UILabel = {
+//    let label = UILabel()
+//    label.text = "최고 이용 유저"
+//    label.font = .boldSystemFont(ofSize: 20)
+//    label.textColor = .black
+//    return label
+//  }()
+//  lazy var firstUserImageView: UIImageView = {
+//    let imageView = UIImageView()
+//    imageView.image = self.userProfileModel.Image
+//    imageView.clipsToBounds = true
+//    imageView.layer.cornerRadius = 20
+//    return imageView
+//  }()
+//  let firstUserNameLabel: UILabel = {
+//    let label = UILabel()
+//    label.text = "iOS개발자 이치훈"
+//    label.font = .boldSystemFont(ofSize: 15)
+//    label.textColor = .black
+//    return label
+//  }()
+//  let firstUserHasPointLabel: UILabel = {
+//    let label = UILabel()
+//    label.text = "2500P"
+//    label.textColor = .black
+//    return label
+//  }()
   
   // MARK: - Initializer
   
@@ -358,11 +358,11 @@ extension BottomSheetView: LayoutSupport {
     self.pinDetailView.addSubview(trashAddressLabel)
     self.pinDetailView.addSubview(trashDistanceLabel)
     
-    self.pinDetailContainView.addSubview(pinRankingView)
-    self.pinRankingView.addSubview(titleLabel)
-    self.pinRankingView.addSubview(firstUserImageView)
-    self.pinRankingView.addSubview(firstUserNameLabel)
-    self.pinRankingView.addSubview(firstUserHasPointLabel)
+//    self.pinDetailContainView.addSubview(pinRankingView)
+//    self.pinRankingView.addSubview(titleLabel)
+//    self.pinRankingView.addSubview(firstUserImageView)
+//    self.pinRankingView.addSubview(firstUserNameLabel)
+//    self.pinRankingView.addSubview(firstUserHasPointLabel)
     
     self.handlerView.addSubview(self.barView)
   }
@@ -456,32 +456,32 @@ extension BottomSheetView: SetupSubviewsConstraints {
       $0.top.equalTo(trashAddressLabel.snp.bottom).offset(1)
     }
     
-    self.pinRankingView.snp.makeConstraints {
-      $0.top.equalTo(pinDetailView.snp.bottom)
-      $0.leading.trailing.equalToSuperview()
-      $0.bottom.equalToSuperview()
-    }
-    
-    self.titleLabel.snp.makeConstraints {
-      $0.top.equalToSuperview().offset(10)
-      $0.leading.equalToSuperview().offset(35)
-    }
-    
-    self.firstUserImageView.snp.makeConstraints {
-      $0.top.equalTo(titleLabel.snp.bottom).offset(5)
-      $0.leading.equalToSuperview().offset(35)
-      $0.height.width.equalTo(40)
-    }
-    
-    self.firstUserNameLabel.snp.makeConstraints {
-      $0.leading.equalTo(firstUserImageView.snp.trailing).offset(10)
-      $0.centerY.equalTo(firstUserImageView.snp.centerY)
-    }
-    
-    self.firstUserHasPointLabel.snp.makeConstraints {
-      $0.centerY.equalTo(firstUserNameLabel).offset(3)
-      $0.trailing.equalToSuperview().inset(25)
-    }
+//    self.pinRankingView.snp.makeConstraints {
+//      $0.top.equalTo(pinDetailView.snp.bottom)
+//      $0.leading.trailing.equalToSuperview()
+//      $0.bottom.equalToSuperview()
+//    }
+//
+//    self.titleLabel.snp.makeConstraints {
+//      $0.top.equalToSuperview().offset(10)
+//      $0.leading.equalToSuperview().offset(35)
+//    }
+//
+//    self.firstUserImageView.snp.makeConstraints {
+//      $0.top.equalTo(titleLabel.snp.bottom).offset(5)
+//      $0.leading.equalToSuperview().offset(35)
+//      $0.height.width.equalTo(40)
+//    }
+//
+//    self.firstUserNameLabel.snp.makeConstraints {
+//      $0.leading.equalTo(firstUserImageView.snp.trailing).offset(10)
+//      $0.centerY.equalTo(firstUserImageView.snp.centerY)
+//    }
+//
+//    self.firstUserHasPointLabel.snp.makeConstraints {
+//      $0.centerY.equalTo(firstUserNameLabel).offset(3)
+//      $0.trailing.equalToSuperview().inset(25)
+//    }
   }
 
 }

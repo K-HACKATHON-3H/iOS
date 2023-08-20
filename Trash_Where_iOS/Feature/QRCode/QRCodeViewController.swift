@@ -13,6 +13,7 @@ class QRCodeViewController: UIViewController {
     let label = UILabel()
     label.text = "대충 업적 보이는 화면"
     label.font = .boldSystemFont(ofSize: 35)
+    label.textColor = .black
     return label
   }()
   
