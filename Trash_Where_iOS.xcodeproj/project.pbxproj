@@ -34,6 +34,7 @@
 		4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475D12A5F1C74005F9412 /* AlertViewController.swift */; };
 		4B7475D52A5F1CCF005F9412 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */; };
 		4BCC28532A7C272C0035853E /* SceneKit_Assets.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BCC28522A7C272C0035853E /* SceneKit_Assets.scnassets */; };
+		4BD46EAA2A8FCF53002662BF /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD46EA92A8FCF53002662BF /* UserProfileModel.swift */; };
 		4BFE62D82A693803003E5E31 /* TrashAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */; };
 		4BFE62DA2A695509003E5E31 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE62D92A695509003E5E31 /* BottomSheetView.swift */; };
 		4BFE62F32A6AE578003E5E31 /* PassThroughView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */; };
@@ -85,6 +86,7 @@
 		4B7475D12A5F1C74005F9412 /* AlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewController.swift; sourceTree = "<group>"; };
 		4B7475D42A5F1CCF005F9412 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		4BCC28522A7C272C0035853E /* SceneKit_Assets.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = SceneKit_Assets.scnassets; sourceTree = "<group>"; };
+		4BD46EA92A8FCF53002662BF /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 		4BFE62D72A693803003E5E31 /* TrashAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrashAnnotationView.swift; sourceTree = "<group>"; };
 		4BFE62D92A695509003E5E31 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 		4BFE62F22A6AE578003E5E31 /* PassThroughView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughView.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				4B4211482A7CEEBD00154243 /* PinModel.swift */,
+				4BD46EA92A8FCF53002662BF /* UserProfileModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 				4BFE62D82A693803003E5E31 /* TrashAnnotationView.swift in Sources */,
 				4B7475D22A5F1C74005F9412 /* AlertViewController.swift in Sources */,
 				4B72EA112A5DAB5F0077C728 /* AppDelegate.swift in Sources */,
+				4BD46EAA2A8FCF53002662BF /* UserProfileModel.swift in Sources */,
 				4B5B939E2A7E7A5D003EE323 /* PinElevationAPI.swift in Sources */,
 				4B583E7B2A8BB0D800193C58 /* RewardViewController.swift in Sources */,
 				4B17E1A52A77E62C00DA8D9D /* BottomSheetViewDelegate.swift in Sources */,
@@ -634,6 +638,7 @@
 				DEVELOPMENT_TEAM = GHGPAZGBBT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = /Users/ichihun/Trash_Where_iOS/Trash_Where_iOS/Support/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "쓰웨어";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -664,6 +669,7 @@
 				DEVELOPMENT_TEAM = GHGPAZGBBT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = /Users/ichihun/Trash_Where_iOS/Trash_Where_iOS/Support/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "쓰웨어";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

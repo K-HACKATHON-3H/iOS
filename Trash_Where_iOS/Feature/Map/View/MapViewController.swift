@@ -33,21 +33,17 @@ final class MapViewController: UIViewController {
   
   var mapView: MKMapView!
   var userLocationButton: UIButton = {
-    // TODO: 버튼 클릭시 색상변경
     let button = UIButton()
-    let userLocationImageView = UIImageView(image: UIImage(named: "GPSemoji"))
     button.backgroundColor = .white
     button.layer.cornerRadius = 20
     button.layer.shadowColor = UIColor.black.cgColor
     button.layer.shadowOffset = CGSize(width: 0, height: 2)
     button.layer.shadowOpacity = 0.5
     button.layer.shadowRadius = 3
-    button.addSubview(userLocationImageView)
-    userLocationImageView.snp.makeConstraints {
-      $0.edges.equalToSuperview().inset(8)
-    }
     return button
   }()
+  let userLocationImageView = UIImageView(image: UIImage(named: "GPSemoji"))
+  
   lazy var bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
     bottomSheetView.bottomSheetColor = .lightGray
@@ -60,14 +56,13 @@ final class MapViewController: UIViewController {
   //MARK: - Data
   
   // Sample Data
-  let pinModels = [
+  var pinModels = [
     PinModel(address: "대전 동구 천동 0번길", latitude: 36.3167000, longitude: 127.4435000),
     PinModel(address: "대전 동구 천동 1번길", latitude: 36.3178000, longitude: 127.4419000),
     PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
-    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000),
-    PinModel(address: "집", latitude: 36.315474, longitude: 127.442800)]
+    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)]
   //
   
   // MARK: - LifeCycle
@@ -100,10 +95,11 @@ final class MapViewController: UIViewController {
 // MARK: - Action
   
   @objc func setMapRegion() {
+    self.userLocationImageView.image = self.userLocationImageView.image?.withTintColor(.systemBlue)
+    
     var coordiCenterLa = mapView.userLocation.coordinate.latitude
     let coordiCenterLo = mapView.userLocation.coordinate.longitude
     coordiCenterLa -= 0.001
-    
     let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: coordiCenterLa, longitude: coordiCenterLo),
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
@@ -111,6 +107,10 @@ final class MapViewController: UIViewController {
     
     bottomSheetView.hiddenDetailView()
     mapView.removeMapViewOverlayOfLast()
+   
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      self.userLocationImageView.image = self.userLocationImageView.image?.withTintColor(.black)
+    }
   }
   
   // MARK: - Method
@@ -158,12 +158,12 @@ final class MapViewController: UIViewController {
       }
       
       //DebugCode
-      self?.guidePointLocations.map {
-        print($0)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = $0
-        self?.mapView.addAnnotation(annotation)
-      }
+//      self?.guidePointLocations.map {
+//        print($0)
+//        let annotation = MKPointAnnotation()
+//        annotation.coordinate = $0
+//        self?.mapView.addAnnotation(annotation)
+//      }
     }
   }
   
@@ -200,7 +200,6 @@ final class MapViewController: UIViewController {
 
 extension MapViewController: BottomSheetViewDelegate {
   
-  // TODO: pin을 선택했을 떄만 ARButton 노출
   func didTapARButton() {
     ARNaviVC = ARNaviViewController()
     pinElevationAPI.deleagte = ARNaviVC
@@ -309,7 +308,8 @@ extension MapViewController: MKMapViewDelegate {
     // TODO: 추가되는 서비스를 대비한 logic
     switch annotation.imageType {
     case 0:
-      annotationImage = UIImage(named: "TestPin")
+      annotationImage = UIImage(named: "Pin")
+      annotationView?.centerOffset = CGPoint(x: 0, y: -15)
     default:
       annotationImage = UIImage(systemName: "trash.circle")
     }
@@ -400,6 +400,8 @@ extension MapViewController: LayoutSupport {
     self.view.addSubview(mapView)
     self.view.addSubview(self.bottomSheetView)
     mapView.addSubview(userLocationButton)
+    
+    self.userLocationButton.addSubview(userLocationImageView)
   }
 
   func setupSubviewsConstraints() {
@@ -411,6 +413,10 @@ extension MapViewController: LayoutSupport {
     
     bottomSheetView.snp.makeConstraints {
       $0.edges.equalToSuperview()
+    }
+    
+    self.userLocationImageView.snp.makeConstraints {
+      $0.edges.equalToSuperview().inset(8)
     }
   }
   

@@ -24,7 +24,7 @@ class PinElevationAPI {
   
   public func fetchElevation(pinModel: PinModel, type: RequestType) {
     self.pinAPIModel = pinModel
-    // TODO: API 비용 최적화작업
+
     if pinAPIModel == nil {
       print("PinModels is empty...")
       return

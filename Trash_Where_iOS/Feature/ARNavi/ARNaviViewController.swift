@@ -58,6 +58,8 @@ class ARNaviViewController: UIViewController {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
     let pinNode = pinScene.rootNode.childNode(withName: "C3_002", recursively: true)
     pinNode!.scale = SCNVector3(x: 25, y: 25, z: 25)
+    pinNode!.position = SCNVector3(x: 0, y: 1, z: 0) // *
+    
     let material = SCNMaterial()
     material.diffuse.contents = UIColor.red
     material.specular.contents = UIColor.white
@@ -135,7 +137,7 @@ class ARNaviViewController: UIViewController {
     super.viewDidLoad()
     locationManager.delegate = self
     
-    sceneLocationView.debugOptions = [.showFeaturePoints]
+    //sceneLocationView.debugOptions = [.showFeaturePoints]
     sceneLocationView.autoenablesDefaultLighting = true
     
     setLocationManager()
@@ -236,7 +238,7 @@ extension ARNaviViewController: CLLocationManagerDelegate {
     let distanceInPinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: arPinModel.latitude, longitude: arPinModel.longitude))
     distanceLabel.text = "\(Int(distanceInPinNodeOfMeters))m"
     
-    if distanceInPinNodeOfMeters <= 20 { // 쓰레기통 도착!
+    if distanceInPinNodeOfMeters <= 15 { // 쓰레기통 도착!
       // 리워드 지급 페이지
       if let tabVC = self.presentingViewController as? UITabBarController {
         if let mapVC = tabVC.selectedViewController as? MapViewController {
