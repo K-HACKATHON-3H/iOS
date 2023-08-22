@@ -34,7 +34,7 @@ class TabBarController: UITabBarController {
 //    distanceRankingViewController.tabBarItem =
 //    UITabBarItem(title: "거리순", image: UIImage(systemName: "arrow.up.arrow.down"), tag: 1)
     qrcodeViewController.tabBarItem =
-    UITabBarItem(title: "QR코드", image: UIImage(systemName: "qrcode"), tag: 2)
+    UITabBarItem(title: "업적", image: UIImage(systemName: "trophy.fill"), tag: 2)
 //    alertViewController.tabBarItem =
 //    UITabBarItem(title: "알림", image: UIImage(systemName: "bell"), tag: 3)
     profileViewController.tabBarItem =

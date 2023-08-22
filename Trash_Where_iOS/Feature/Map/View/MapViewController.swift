@@ -200,7 +200,6 @@ final class MapViewController: UIViewController {
 
 extension MapViewController: BottomSheetViewDelegate {
   
-  // TODO: pin을 선택했을 떄만 ARButton 노출
   func didTapARButton() {
     ARNaviVC = ARNaviViewController()
     pinElevationAPI.deleagte = ARNaviVC
@@ -309,7 +308,8 @@ extension MapViewController: MKMapViewDelegate {
     // TODO: 추가되는 서비스를 대비한 logic
     switch annotation.imageType {
     case 0:
-      annotationImage = UIImage(named: "TestPin")
+      annotationImage = UIImage(named: "Pin")
+      annotationView?.centerOffset = CGPoint(x: 0, y: -15)
     default:
       annotationImage = UIImage(systemName: "trash.circle")
     }
