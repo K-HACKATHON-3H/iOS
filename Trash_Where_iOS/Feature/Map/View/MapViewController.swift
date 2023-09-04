@@ -57,13 +57,15 @@ final class MapViewController: UIViewController {
   
   // Sample Data
   var pinModels = [
-    PinModel(address: "대전 동구 천동 0번길", latitude: 36.3167000, longitude: 127.4435000),
-    PinModel(address: "대전 동구 천동 1번길", latitude: 36.3178000, longitude: 127.4419000),
-    PinModel(address: "대전 동구 천동 2번길", latitude: 36.3167000, longitude: 127.4400000),
-    PinModel(address: "대전 동구 천동 3번길", latitude: 36.3141000, longitude: 127.4455000),
-    PinModel(address: "대전 동구 천동 4번길", latitude: 36.3198000, longitude: 127.4482000),
-    PinModel(address: "대전 동구 천동 5번길", latitude: 36.3164000, longitude: 127.4411000)]
-  //
+    PinModel(address: "대전 동구 천동 대전로 0번길", latitude: 36.3167000, longitude: 127.4435000),
+    PinModel(address: "대전 동구 천동 대전로 1번길", latitude: 36.3178000, longitude: 127.4419000),
+    PinModel(address: "대전 동구 천동 대전로 2번길", latitude: 36.3167000, longitude: 127.4400000),
+    PinModel(address: "대전 동구 천동 대전로 3번길", latitude: 36.3141000, longitude: 127.4455000),
+    PinModel(address: "대전 동구 천동 대전로 4번길", latitude: 36.3198000, longitude: 127.4482000),
+    PinModel(address: "대전 동구 천동 대전로 5번길", latitude: 36.3164000, longitude: 127.4411000),
+    PinModel(address: "대전 동구 용운동 대학로 1번길", latitude: 36.3346000, longitude: 127.4556000),
+    PinModel(address: "대전 동구 용운동 대학로 2번길", latitude: 36.3338000, longitude: 127.4571000),
+    PinModel(address: "대전 동구 용운동 대학로 3번길", latitude: 36.3368000, longitude: 127.4567000)]
   
   // MARK: - LifeCycle
   

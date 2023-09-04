@@ -52,7 +52,7 @@ class ARNaviViewController: UIViewController {
     return label
   }()
   
-  // AR UI
+  // MARK: AR UI
   var pinLocationNode: LocationNode!
   var pinNode: SCNNode = {
     let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
