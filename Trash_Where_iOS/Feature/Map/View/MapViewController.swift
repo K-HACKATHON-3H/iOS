@@ -117,6 +117,7 @@ final class MapViewController: UIViewController {
   
   // MARK: - Method
   
+  // 최단경로를 탐색한다.
   func calculateDirections(coordinate: CLLocationCoordinate2D) {
     let destinationPlacemark = MKPlacemark(coordinate: coordinate)
     // 사용자의 현재 위치
@@ -160,12 +161,12 @@ final class MapViewController: UIViewController {
       }
       
       //DebugCode
-//      self?.guidePointLocations.map {
-//        print($0)
-//        let annotation = MKPointAnnotation()
-//        annotation.coordinate = $0
-//        self?.mapView.addAnnotation(annotation)
-//      }
+      self?.guidePointLocations.map {
+        print($0)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = $0
+        self?.mapView.addAnnotation(annotation)
+      }
     }
   }
   

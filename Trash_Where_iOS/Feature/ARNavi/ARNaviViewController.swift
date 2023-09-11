@@ -143,6 +143,10 @@ class ARNaviViewController: UIViewController {
     setLocationManager()
     addSCNNode()
     configureSubviews()
+    
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
+      self.coinJumpEffect()
+    }
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -154,6 +158,7 @@ class ARNaviViewController: UIViewController {
   
   // MARK: - Method
   
+  // Node들을 추가함
   func addSCNNode() {
     // pinNode
     let targetCoordinate = CLLocationCoordinate2D(
@@ -180,6 +185,25 @@ class ARNaviViewController: UIViewController {
     locationManager.startUpdatingLocation()
     locationManager.startUpdatingHeading()
     locationManager.requestWhenInUseAuthorization()
+  }
+  
+  // CoinNode의 위치가 변경될 때 coinAppearEffect()애니메이션을 사용함
+  // Spot이 사라졌다가 다시 생기고, Coin이 하늘위로 올라갔다 내려옴
+  func coinJumpEffect() {
+    let becomeSmaller = SCNAction.scale(by: 0.0, duration: 0.5)
+    let spotOriginalSize = SCNAction.scale(to: 1.0, duration: 0.5)
+    let moveUp = SCNAction.moveBy(x: 0, y: 150, z: 0, duration: 0.5)
+    let moveDown = SCNAction.moveBy(x: 0, y: -150, z: 0.5, duration: 0.5)
+    
+    let spotBoundAction = SCNAction.repeat(SCNAction.sequence([becomeSmaller, spotOriginalSize]), count: 1)
+    let coinJumpAction = SCNAction.repeat(SCNAction.sequence([moveUp, moveDown]), count: 1)
+    
+    spotNode.runAction(spotBoundAction)
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+      // 애니메이션 0.5초 이후에 location이 이동되는 0.5 딜레이줄 필요 없음 (삭제할 것)
+      // *location 이동
+      self.coinNode.runAction(coinJumpAction)
+    }
   }
   
   // MARK: - Action
@@ -259,12 +283,16 @@ extension ARNaviViewController: CLLocationManagerDelegate {
       if distanceInCoinNodeOfMeters < 25 { // 코인 획득!!
         coinIndex += 1
         // TODO: Point 리워드 지급
+        self.coinJumpEffect()
         
         if coinIndex < coinLocations.count {
-          coinLocationNode!.location = CLLocation(coordinate: coinLocations[coinIndex], altitude: coinLocationNode!.location.altitude)
           
-          // coinNode Elevation API Fetch
-          pinElevationAPI.fetchElevation(pinModel: PinModel(latitude: coinLocations[coinIndex].latitude, longitude: coinLocations[coinIndex].longitude), type: .coinNode)
+          DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+            self.coinLocationNode!.location = CLLocation(coordinate: self.coinLocations[self.coinIndex], altitude: self.coinLocationNode!.location.altitude)
+            
+            // coinNode Elevation API Fetch
+            self.pinElevationAPI.fetchElevation(pinModel: PinModel(latitude: self.coinLocations[self.coinIndex].latitude, longitude: self.coinLocations[self.coinIndex].longitude), type: .coinNode)
+          }
           
         } else {
           // 마지막 node이니 더이상 node를 추가할 필요가 없음
