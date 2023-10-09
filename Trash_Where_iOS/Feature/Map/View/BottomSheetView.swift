@@ -71,7 +71,8 @@ final class BottomSheetView: PassThroughView {
   
   let bottomSheetView: UIView = {
     let view = UIView()
-    view.backgroundColor = .systemGroupedBackground
+    //view.backgroundColor = .white
+    
     return view
   }()
   private let barView: UIView = {

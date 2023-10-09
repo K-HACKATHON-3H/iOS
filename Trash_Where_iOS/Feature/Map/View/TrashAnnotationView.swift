@@ -23,10 +23,10 @@ final class TrashAnnotationView: MKAnnotationView {
   }
   
   func setupUI() {
-    frame = CGRect(x: 0, y: 0, width: 40, height: 50)
-    //centerOffset = CGPoint(x: 0, y: 0)
+    //frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+    //layer.cornerRadius = 20
     image = UIImage(named: "TestPin")
-    backgroundColor = .clear
+    //backgroundColor = .white
   }
   
 }

@@ -305,14 +305,14 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     let annotationImage: UIImage!
-    let size = CGSize(width: 65, height: 69)
+    let size = CGSize(width: 40, height: 40)
     UIGraphicsBeginImageContext(size)
     
-    // TODO: 추가되는 서비스를 대비한 logic
+    // annotation.imageType 값에 따라서 image setting
     switch annotation.imageType {
     case 0:
-      annotationImage = UIImage(named: "Pin")
-      annotationView?.centerOffset = CGPoint(x: 0, y: -15)
+      annotationImage = UIImage(named: "TrashPin")
+      //annotationView?.centerOffset = CGPoint(x: 0, y: -15)
     default:
       annotationImage = UIImage(systemName: "trash.circle")
     }
@@ -348,7 +348,8 @@ extension MapViewController: MKMapViewDelegate {
     if overlay is MKPolyline {
       let polylineRenderer = MKPolylineRenderer(overlay: overlay)
       polylineRenderer.lineWidth = 5.0
-      polylineRenderer.strokeColor = .blue
+      polylineRenderer.strokeColor = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
+      
       return polylineRenderer
     }
     
