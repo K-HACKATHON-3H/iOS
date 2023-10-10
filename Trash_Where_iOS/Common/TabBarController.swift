@@ -12,6 +12,7 @@ class TabBarController: UITabBarController {
   let mapViewController = MapViewController()
   let qrcodeViewController = QRCodeViewController()
   let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+  var customOrangeColor: UIColor = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,11 +29,11 @@ class TabBarController: UITabBarController {
   
   private func setTabBarItem() {
     mapViewController.tabBarItem =
-    UITabBarItem(title: "홈", image: UIImage(systemName: "house"), tag: 0)
+    UITabBarItem(title: nil, image: UIImage(named: "TabBarItemHome"), tag: 0)
     qrcodeViewController.tabBarItem =
-    UITabBarItem(title: "업적", image: UIImage(systemName: "trophy.fill"), tag: 2)
+    UITabBarItem(title: nil, image: UIImage(named: "TabBarItemBadge"), tag: 1)
     profileViewController.tabBarItem =
-    UITabBarItem(title: "MY", image: UIImage(systemName: "person"), tag: 4)
+    UITabBarItem(title: nil, image: UIImage(systemName: "person"), tag: 2)
     
     self.viewControllers = [mapViewController, qrcodeViewController, profileViewController]
   }
@@ -49,13 +50,10 @@ extension TabBarController {
     tabFrame.size.height = 95
     tabFrame.origin.y = self.view.frame.size.height - 95
     self.tabBar.frame = tabFrame
-    self.tabBar.tintColor = .black
-    self.tabBar.layer.masksToBounds = true
-    self.tabBar.layer.borderColor = UIColor.black.cgColor
-    self.tabBar.layer.borderWidth = 0.4
+    self.tabBar.tintColor = customOrangeColor
     
     self.tabBar.layer.shadowColor = UIColor.black.cgColor
-    self.tabBar.layer.shadowOffset = CGSize(width: 0, height: 10)
+    self.tabBar.layer.shadowOffset = CGSize(width: 0, height: 0.1)
     self.tabBar.layer.shadowOpacity = 0.5
   }
   

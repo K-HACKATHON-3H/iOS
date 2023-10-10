@@ -19,9 +19,9 @@ final class BottomSheetView: PassThroughView {
   
   private enum Const {
     static let duration = 0.5
-    static let cornerRadius = 15.0
+    static let cornerRadius = 37.0
     static let barViewTopSpacing = 5.0
-    static let barViewSize = CGSize(width: UIScreen.main.bounds.width * 0.2, height: 5.0)
+    static let barViewSize = CGSize(width: UIScreen.main.bounds.width * 0.15, height: 5.0)
     static let bottomSheetRatio: (Mode) -> Double = { mode in
       switch mode {
       case .tip:
@@ -71,8 +71,6 @@ final class BottomSheetView: PassThroughView {
   
   let bottomSheetView: UIView = {
     let view = UIView()
-    //view.backgroundColor = .white
-    
     return view
   }()
   private let barView: UIView = {
@@ -177,39 +175,7 @@ final class BottomSheetView: PassThroughView {
     label.textColor = .black
     return label
   }()
-  
-  // pinRankingView
-//  let pinRankingView: UIView = {
-//    let view = UIView()
-//    return view
-//  }()
-//  let titleLabel: UILabel = {
-//    let label = UILabel()
-//    label.text = "최고 이용 유저"
-//    label.font = .boldSystemFont(ofSize: 20)
-//    label.textColor = .black
-//    return label
-//  }()
-//  lazy var firstUserImageView: UIImageView = {
-//    let imageView = UIImageView()
-//    imageView.image = self.userProfileModel.Image
-//    imageView.clipsToBounds = true
-//    imageView.layer.cornerRadius = 20
-//    return imageView
-//  }()
-//  let firstUserNameLabel: UILabel = {
-//    let label = UILabel()
-//    label.text = "iOS개발자 이치훈"
-//    label.font = .boldSystemFont(ofSize: 15)
-//    label.textColor = .black
-//    return label
-//  }()
-//  let firstUserHasPointLabel: UILabel = {
-//    let label = UILabel()
-//    label.text = "2500P"
-//    label.textColor = .black
-//    return label
-//  }()
+
   
   // MARK: - Initializer
   
@@ -220,7 +186,9 @@ final class BottomSheetView: PassThroughView {
    
     self.bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.bottomSheetView.layer.cornerRadius = Const.cornerRadius
-    self.bottomSheetView.clipsToBounds = true
+    self.bottomSheetView.layer.shadowColor = UIColor.black.cgColor
+    self.bottomSheetView.layer.shadowOffset = CGSize(width: 0, height: 0.1)
+    self.bottomSheetView.layer.shadowOpacity = 0.5
     
     addTarget()
     configureSubviews()
@@ -456,33 +424,7 @@ extension BottomSheetView: SetupSubviewsConstraints {
       $0.leading.equalTo(trashImageView.snp.trailing).offset(10)
       $0.top.equalTo(trashAddressLabel.snp.bottom).offset(1)
     }
-    
-//    self.pinRankingView.snp.makeConstraints {
-//      $0.top.equalTo(pinDetailView.snp.bottom)
-//      $0.leading.trailing.equalToSuperview()
-//      $0.bottom.equalToSuperview()
-//    }
-//
-//    self.titleLabel.snp.makeConstraints {
-//      $0.top.equalToSuperview().offset(10)
-//      $0.leading.equalToSuperview().offset(35)
-//    }
-//
-//    self.firstUserImageView.snp.makeConstraints {
-//      $0.top.equalTo(titleLabel.snp.bottom).offset(5)
-//      $0.leading.equalToSuperview().offset(35)
-//      $0.height.width.equalTo(40)
-//    }
-//
-//    self.firstUserNameLabel.snp.makeConstraints {
-//      $0.leading.equalTo(firstUserImageView.snp.trailing).offset(10)
-//      $0.centerY.equalTo(firstUserImageView.snp.centerY)
-//    }
-//
-//    self.firstUserHasPointLabel.snp.makeConstraints {
-//      $0.centerY.equalTo(firstUserNameLabel).offset(3)
-//      $0.trailing.equalToSuperview().inset(25)
-//    }
+ 
   }
 
 }

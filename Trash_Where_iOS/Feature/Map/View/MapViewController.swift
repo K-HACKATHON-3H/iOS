@@ -46,12 +46,13 @@ final class MapViewController: UIViewController {
   
   lazy var bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
-    bottomSheetView.bottomSheetColor = .lightGray
-    bottomSheetView.barViewColor = .darkGray
+    bottomSheetView.bottomSheetColor = .white
+    bottomSheetView.barViewColor = customOrangeColor
     bottomSheetView.mapView = self.mapView
     bottomSheetView.delegate = self
     return bottomSheetView
   }()
+  var customOrangeColor: UIColor = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
   
   //MARK: - Data
   
@@ -348,7 +349,7 @@ extension MapViewController: MKMapViewDelegate {
     if overlay is MKPolyline {
       let polylineRenderer = MKPolylineRenderer(overlay: overlay)
       polylineRenderer.lineWidth = 5.0
-      polylineRenderer.strokeColor = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
+      polylineRenderer.strokeColor = customOrangeColor
       
       return polylineRenderer
     }
