@@ -108,7 +108,7 @@ final class MapViewController: UIViewController {
     mapView.setRegion(region, animated: true)
     bottomSheetView.mode = .tip
     
-    bottomSheetView.hiddenDetailView()
+   // bottomSheetView.hiddenDetailView()
     mapView.removeMapViewOverlayOfLast()
    
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -284,7 +284,7 @@ extension MapViewController: MKMapViewDelegate {
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5
-      //annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
+      //annotationView.transform = CGAffineTransform(rotationAngle: )
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
@@ -331,7 +331,7 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     mapView.removeMapViewOverlayOfLast()
-    self.bottomSheetView.cancelPinButton.isHidden = false
+   // self.bottomSheetView.cancelPinButton.isHidden = false
     self.bottomSheetView.popUpBottomSheet()
     
     var coordiCenterLa = annotation.coordinate.latitude
