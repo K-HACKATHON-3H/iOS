@@ -279,8 +279,8 @@ extension MapViewController: MKMapViewDelegate {
     if annotation is MKUserLocation {
       let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
       annotationView.image = UIImage(named: "userLocationIcon")
-      annotationView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.63)
-      annotationView.layer.shadowColor = UIColor.systemBlue.cgColor
+     // annotationView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.63)
+      annotationView.layer.shadowColor = UIColor.orange.cgColor
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5

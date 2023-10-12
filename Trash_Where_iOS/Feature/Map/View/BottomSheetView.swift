@@ -93,20 +93,37 @@ final class BottomSheetView: PassThroughView {
   }()
   let rankTierLabel: UILabel = {
     let label = UILabel()
+    label.text = "환경티어"
+    label.font = UIFont(name: "Inter-Bold", size: 15)
+    label.textColor = .systemGray
     return label
   }()
   let userNickNameLabel: UILabel = {
     let label = UILabel()
+    label.text = "이치훈"
+    label.font = UIFont(name: "Inter-Bold", size: 25)
+    label.textColor = .black
+    return label
+  }()
+  let nameHonorLabel: UILabel = {
+    let label = UILabel()
+    label.text = "님"
+    label.font = UIFont(name: "Inter-Bold", size: 15)
+    label.textColor = .black
     return label
   }()
   let pointLabel: UILabel = {
     let label = UILabel()
+    label.text = "2500"
+    label.font = UIFont(name: "Inter-Bold", size: 18)
+    label.textColor = .black
     return label
   }()
   let pointUnitLabel: UILabel = {
     let label = UILabel()
     label.text = "P"
-    label.font = .boldSystemFont(ofSize: 10)
+    label.font = UIFont(name: "Inter-Bold", size: 18)
+    label.textColor = .black
     return label
   }()
   
@@ -342,7 +359,14 @@ extension BottomSheetView: LayoutSupport {
   func addSubviews() {
     self.addSubview(self.bottomSheetView)
 //    self.bottomSheetView.addSubview(proFileView)
-    self.bottomSheetView.addSubview(handlerView)
+    //self.bottomSheetView.addSubview(handlerView)
+    self.bottomSheetView.addSubview(stateContainView)
+    self.stateContainView.addSubview(rankTierLabel)
+    self.stateContainView.addSubview(userNickNameLabel)
+    self.stateContainView.addSubview(nameHonorLabel)
+    self.stateContainView.addSubview(pointUnitLabel)
+    self.stateContainView.addSubview(pointLabel)
+    self.stateContainView.addSubview(handlerView)
 //    self.bottomSheetView.addSubview(pinDetailContainView)
 //    
 //    self.proFileView.addSubview(proFileImageView)
@@ -387,6 +411,11 @@ extension BottomSheetView: SetupSubviewsConstraints {
       $0.height.equalTo(28)
     }
     
+    self.stateContainView.snp.makeConstraints {
+      $0.top.leading.trailing.equalToSuperview()
+      $0.height.equalTo(100)
+    }
+    //(0.77 * UIScreen.main.bounds.height) - 95
     // profile contraint
 //    self.cancelPinButton.snp.makeConstraints {
 //      $0.top.trailing.equalTo(proFileView).inset(8)
@@ -448,6 +477,30 @@ extension BottomSheetView: SetupSubviewsConstraints {
 //      $0.top.equalTo(trashAddressLabel.snp.bottom).offset(1)
 //    }
  
+    self.rankTierLabel.snp.makeConstraints {
+      $0.top.equalToSuperview().inset(22)
+      $0.leading.equalToSuperview().inset(27)
+    }
+    
+    self.userNickNameLabel.snp.makeConstraints {
+      $0.top.equalTo(rankTierLabel.snp.bottom).offset(7)
+      $0.leading.equalToSuperview().inset(25)
+    }
+    
+    self.nameHonorLabel.snp.makeConstraints {
+      $0.leading.equalTo(userNickNameLabel.snp.trailing).offset(4)
+      $0.centerY.equalTo(userNickNameLabel.snp.centerY).offset(3)
+    }
+    
+    self.pointUnitLabel.snp.makeConstraints {
+      $0.trailing.equalToSuperview().inset(22)
+      $0.centerY.equalTo(userNickNameLabel.snp.centerY)
+    }
+    
+    self.pointLabel.snp.makeConstraints {
+      $0.trailing.equalTo(pointUnitLabel.snp.leading).offset(-3)
+      $0.centerY.equalTo(userNickNameLabel.snp.centerY)
+    }
   }
 
 }
