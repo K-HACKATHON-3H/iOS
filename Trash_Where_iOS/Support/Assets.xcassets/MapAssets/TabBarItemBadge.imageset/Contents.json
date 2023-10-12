@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "KakaoTalk_Photo_2023-08-22-15-54-10.png",
+      "filename" : "Vector.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Vector@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Vector@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

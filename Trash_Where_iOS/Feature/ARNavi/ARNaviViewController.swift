@@ -86,10 +86,10 @@ class ARNaviViewController: UIViewController {
   }()
   var coinLocationNode: LocationNode!
   var coinNode: SCNNode = {
-    let pointScene = SCNScene(named: "SceneKit_Assets.scnassets/coinclover.scn")!
-    let coinNode = pointScene.rootNode.childNode(withName: "coin", recursively: true)
-    coinNode?.scale = SCNVector3(20, 20, 20)
-    coinNode?.position = SCNVector3(x: 0, y: 0.5, z: 0)
+    let pointScene = SCNScene(named: "SceneKit_Assets.scnassets/Treasure_Reward_Pack.scn")!
+    let coinNode = pointScene.rootNode.childNode(withName: "Coin_Star_Gold", recursively: true)
+    coinNode?.scale = SCNVector3(5, 5, 5)
+    coinNode?.position = SCNVector3(x: 0, y: 3, z: 0)
     
     let light = SCNLight()
     light.type = .IES

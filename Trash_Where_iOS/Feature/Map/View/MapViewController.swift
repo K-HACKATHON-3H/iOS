@@ -46,12 +46,13 @@ final class MapViewController: UIViewController {
   
   lazy var bottomSheetView: BottomSheetView = {
     let bottomSheetView = BottomSheetView()
-    bottomSheetView.bottomSheetColor = .lightGray
-    bottomSheetView.barViewColor = .darkGray
+    bottomSheetView.bottomSheetColor = .white
+    bottomSheetView.barViewColor = customOrangeColor
     bottomSheetView.mapView = self.mapView
     bottomSheetView.delegate = self
     return bottomSheetView
   }()
+  var customOrangeColor: UIColor = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
   
   //MARK: - Data
   
@@ -107,7 +108,7 @@ final class MapViewController: UIViewController {
     mapView.setRegion(region, animated: true)
     bottomSheetView.mode = .tip
     
-    bottomSheetView.hiddenDetailView()
+   // bottomSheetView.hiddenDetailView()
     mapView.removeMapViewOverlayOfLast()
    
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -283,7 +284,7 @@ extension MapViewController: MKMapViewDelegate {
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5
-      //annotationView.transform = CGAffineTransform(rotationAngle: 0.22)
+      //annotationView.transform = CGAffineTransform(rotationAngle: )
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
@@ -305,14 +306,14 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     let annotationImage: UIImage!
-    let size = CGSize(width: 65, height: 69)
+    let size = CGSize(width: 40, height: 40)
     UIGraphicsBeginImageContext(size)
     
-    // TODO: 추가되는 서비스를 대비한 logic
+    // annotation.imageType 값에 따라서 image setting
     switch annotation.imageType {
     case 0:
-      annotationImage = UIImage(named: "Pin")
-      annotationView?.centerOffset = CGPoint(x: 0, y: -15)
+      annotationImage = UIImage(named: "TrashPin")
+      //annotationView?.centerOffset = CGPoint(x: 0, y: -15)
     default:
       annotationImage = UIImage(systemName: "trash.circle")
     }
@@ -330,7 +331,7 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     mapView.removeMapViewOverlayOfLast()
-    self.bottomSheetView.cancelPinButton.isHidden = false
+   // self.bottomSheetView.cancelPinButton.isHidden = false
     self.bottomSheetView.popUpBottomSheet()
     
     var coordiCenterLa = annotation.coordinate.latitude
@@ -348,7 +349,8 @@ extension MapViewController: MKMapViewDelegate {
     if overlay is MKPolyline {
       let polylineRenderer = MKPolylineRenderer(overlay: overlay)
       polylineRenderer.lineWidth = 5.0
-      polylineRenderer.strokeColor = .blue
+      polylineRenderer.strokeColor = customOrangeColor
+      
       return polylineRenderer
     }
     
