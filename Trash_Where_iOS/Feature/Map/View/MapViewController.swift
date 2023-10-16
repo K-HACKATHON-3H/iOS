@@ -60,7 +60,7 @@ final class MapViewController: UIViewController {
   var pinModels = [
     PinModel(address: "대전 동구 천동 대전로 0번길", latitude: 36.3167000, longitude: 127.4435000),
     PinModel(address: "대전 동구 천동 대전로 1번길", latitude: 36.3178000, longitude: 127.4419000),
-    PinModel(address: "대전 동구 천동 대전로 2번길", latitude: 36.3167000, longitude: 127.4400000),
+    PinModel(address: "대전 동구 천동 대전로 542번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 대전로 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 대전로 4번길", latitude: 36.3198000, longitude: 127.4482000),
     PinModel(address: "대전 동구 천동 대전로 5번길", latitude: 36.3164000, longitude: 127.4411000),
@@ -332,6 +332,8 @@ extension MapViewController: MKMapViewDelegate {
     
     mapView.removeMapViewOverlayOfLast()
    // self.bottomSheetView.cancelPinButton.isHidden = false
+    let selectedTrashPinModel = (mapView.selectedAnnotations.first as? TrashAnnotation)!.pinModel
+    bottomSheetView.selectedPinModel = selectedTrashPinModel
     self.bottomSheetView.popUpBottomSheet()
     
     var coordiCenterLa = annotation.coordinate.latitude

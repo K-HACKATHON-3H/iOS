@@ -5,6 +5,7 @@
 //  Created by 이치훈 on 2023/07/20.
 //
 
+import CoreLocation
 import MapKit
 import SnapKit
 import UIKit
@@ -37,21 +38,16 @@ final class BottomSheetView: PassThroughView {
   
   // MARK: - Properties
   
-  // test USerProperties
-  let userProfileModel = UserProfileModel(Image: UIImage(named: "profileImage1")!, name: "iOS개발자 이치훈", point: 2500, topPercent: 34.61, todaypoint: 1)
-  
-  
   var mode: Mode = .tip {
     didSet {
       switch self.mode {
       case .tip:
-        //cancelPinButton.isHidden = true
         mapView?.deselectAnnotation(mapView?.selectedAnnotations as? MKAnnotation, animated: true)
         mapView.removeMapViewOverlayOfLast()
+        self.changeModeToTip()
         break
       case .full:
-        //cancelPinButton.isHidden = false
-        //showDetailView()
+        self.changeModeToFull()
         break
       }
       self.updateConstraint(offset: Const.bottomSheetYPosition(self.mode))
@@ -63,12 +59,32 @@ final class BottomSheetView: PassThroughView {
   var barViewColor: UIColor? {
     didSet { self.barView.backgroundColor = self.barViewColor }
   }
+  var customOrangeColor: UIColor = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
   var mapView: MKMapView!
   weak var delegate: BottomSheetViewDelegate?
-  var trashDistance: Int = 197
+  var selectedPinModel: PinModel?
+  static let locationManager: CLLocationManager = {
+    let locationManager = CLLocationManager()
+    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+    locationManager.distanceFilter = kCLDistanceFilterNone
+    locationManager.startUpdatingLocation()
+    locationManager.startUpdatingHeading()
+    locationManager.requestWhenInUseAuthorization()
+    return locationManager
+  }()
+  var distanceOfMeters: Double = 0.0 {
+    didSet {
+      self.distanceLabel.text = "\(distanceOfMeters)"
+    }
+  }
   
   // MARK: - UI
   
+  lazy var boundaryLineView: UIView = {
+    let view = UIView()
+    view.backgroundColor = customOrangeColor
+    return view
+  }()
   let bottomSheetView: UIView = {
     let view = UIView()
     return view
@@ -126,6 +142,135 @@ final class BottomSheetView: PassThroughView {
     label.textColor = .black
     return label
   }()
+  
+  // TrashDataContainView (Mode.full 상태일 때 이 UI적용)
+  lazy var trashDataContainView: UIView = {
+    let view = UIView()
+    // TrashDataContainView의 Contraints를 미리 짜서 .full될 때 TrashDataContainView만
+    // StateContainView와 갈아 끼우는 식으로 구현
+    // AddSubView
+    view.addSubview(self.distanceImageView)
+    view.addSubview(self.distanceLabel)
+    view.addSubview(self.distanceUnitLabel)
+    view.addSubview(self.TrashNameLabel)
+    view.addSubview(self.getPointLabel)
+//    view.addSubview(self.boundaryLineView)
+    
+    // MakeConstraints
+    self.distanceImageView.snp.makeConstraints {
+      $0.top.equalToSuperview()
+      $0.leading.equalToSuperview().inset(27)
+    }
+    self.distanceLabel.snp.makeConstraints {
+      $0.leading.equalTo(distanceImageView.snp.trailing).offset(5)
+      $0.centerY.equalTo(distanceImageView.snp.centerY)
+    }
+    self.distanceUnitLabel.snp.makeConstraints {
+      $0.leading.equalTo(distanceLabel.snp.trailing).offset(3)
+      $0.centerY.equalTo(distanceImageView.snp.centerY)
+    }
+    self.TrashNameLabel.snp.makeConstraints {
+      $0.leading.equalToSuperview().inset(27)
+      $0.top.equalTo(distanceImageView.snp.bottom).offset(10)
+    }
+    self.getPointLabel.snp.makeConstraints {
+      $0.trailing.equalToSuperview().inset(22)
+      $0.centerY.equalTo(TrashNameLabel.snp.centerY)
+    }
+//      self.boundaryLineView.snp.makeConstraints {
+//        $0.bottom.equalToSuperview()
+//        $0.centerX.equalToSuperview()
+//        $0.height.equalTo(1)
+//        $0.width.equalTo(self.bottomSheetView.layer.frame.width * 0.9)
+//      } // 사라질 예정
+    
+    return view
+  }()
+  let distanceImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.image = UIImage(named: "DistanceLocation")
+    imageView.tintColor = UIColor(cgColor: CGColor(red: 147, green: 145, blue: 145, alpha: 1))
+    return imageView
+  }()
+  lazy var distanceLabel: UILabel = {
+    let label = UILabel()
+    label.text = "92"//"\(self.distanceOfMeters)"
+    label.font = UIFont(name: "Inter-Bold", size: 15)
+    label.textColor = .gray//UIColor(cgColor: CGColor(red: 147, green: 145, blue: 145, alpha: 1))
+    return label
+  }()
+  let distanceUnitLabel: UILabel = {
+    let label = UILabel()
+    label.text = "M"
+    label.font = UIFont(name: "Inter-Bold", size: 15)
+    label.textColor = .gray//UIColor(cgColor: CGColor(red: 147, green: 145, blue: 145, alpha: 1))
+    return label
+  }()
+  lazy var TrashNameLabel: UILabel = {
+    let label = UILabel()
+    
+    // TODO: rxSwift로 주소가 안바뀌는 문제 해결하기
+    label.text = selectedPinModel?.address ?? "쓰레기통 주소"
+    label.font = UIFont(name: "Inter-Bold", size: 20)
+    label.textColor = .black
+    return label
+  }()
+//  let timeImageView: UIImageView = {
+//    let imageView = UIImageView()
+//    imageView.image = UIImage(named: "TrashRemainClock")
+//    return imageView
+//  }()
+//  let remainTimeLabel: UILabel = {
+//    let label = UILabel()
+//    label.text = "1H : 19M"
+//    return label
+//  }()
+  let getPointLabel: UILabel = {
+    let label = UILabel()
+    label.text = "+15 P"
+    label.font = UIFont(name: "Inter-Bold", size: 18)
+    label.textColor = .black
+    return label
+  }()
+  
+  // UserRankingContainView
+  lazy var userRankinContainerView: UIView = {
+    let view = UIView()
+    
+    return view
+  }()
+  let rankingTitleLabel: UILabel = {
+    let label = UILabel()
+    label.text = "1위 정보"
+    label.font = UIFont(name: "Inter-Bold", size: 16)
+    label.textColor = .black
+    return label
+  }()
+  let viewMoreButton: UIButton = {
+    let button = UIButton()
+    button.setTitle("더 보기 〉", for: .normal)
+    button.setTitleColor(.black, for: .normal)
+    return button
+  }()
+  let rankingProfileImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.image = UIImage(named: "sunghoSampleImage")
+    return imageView
+  }()
+  let rankingNameLabel: UILabel = {
+    let label = UILabel()
+    label.text = "추성호"
+    label.font = UIFont(name: "Inter-Bold", size: 18)
+    return label
+  }()
+  let userHasPointLabel: UILabel = {
+    let label = UILabel()
+    label.text = "56 P"
+    label.font = UIFont(name: "Inter-Bold", size: 14)
+    return label
+  }()
+  
+  
   
 //  let cancelPinButton: UIButton = {
 //    let button = UIButton()
@@ -228,6 +373,8 @@ final class BottomSheetView: PassThroughView {
     super.init(frame: frame)
     
     self.backgroundColor = .clear
+    
+    
    
     self.bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.bottomSheetView.layer.cornerRadius = Const.cornerRadius
@@ -304,7 +451,7 @@ final class BottomSheetView: PassThroughView {
       delay: 0,
       options: .allowUserInteraction,
       animations: {
-        // velocity를 이용하여 위로 스와이프인지, 아래로 스와이프인지 확인
+        // velocity를 이용하여 위로 스와이프인지, 아래로 스와이프인지 확인)
         self.mode = .full
       },
       completion: nil
@@ -322,6 +469,116 @@ final class BottomSheetView: PassThroughView {
       },
       completion: nil
     )
+  }
+  
+  private func changeModeToFull() {
+    // TODO: Constraints Code 리팩토링 시급
+    if !mapView.selectedAnnotations.isEmpty {
+      // TODO: - MKUserLocation인경우 Data를 못받아 올 수 있음
+      // annotation을 선택한 상태
+      self.stateContainView.removeFromSuperview()
+      self.bottomSheetView.addSubview(self.trashDataContainView)
+      self.trashDataContainView.snp.makeConstraints {
+        $0.top.equalTo(self.handlerView.snp.bottom)
+        $0.leading.trailing.equalToSuperview()
+        $0.height.equalTo(73) // stateContainView의 height 상수값
+      }
+      
+      // 쓰레기통 랭킹
+      self.userRankinContainerView.snp.makeConstraints {
+        $0.top.equalTo(trashDataContainView.snp.bottom)
+        $0.leading.trailing.equalToSuperview()
+        $0.bottom.equalToSuperview().inset(95)
+      }
+      
+      self.rankingTitleLabel.snp.makeConstraints {
+        $0.top.equalToSuperview().inset(10)
+        $0.leading.equalToSuperview().inset(27)
+      }
+      
+      self.viewMoreButton.snp.makeConstraints {
+        $0.trailing.equalToSuperview().inset(22)
+        $0.centerY.equalTo(rankingTitleLabel.snp.centerY)
+      }
+      
+      self.rankingProfileImageView.snp.makeConstraints {
+        $0.top.equalTo(rankingTitleLabel.snp.bottom).offset(10)
+        $0.leading.equalToSuperview().inset(27)
+      }
+      
+      self.rankingNameLabel.snp.makeConstraints {
+        $0.leading.equalTo(rankingProfileImageView.snp.trailing).offset(10)
+        $0.centerY.equalTo(rankingProfileImageView.snp.centerY).offset(-12)
+      }
+      
+      self.userHasPointLabel.snp.makeConstraints {
+        $0.leading.equalTo(rankingProfileImageView.snp.trailing).offset(10)
+        $0.centerY.equalTo(rankingProfileImageView.snp.centerY).offset(12)
+      }
+      
+      self.boundaryLineView.snp.makeConstraints {
+        $0.top.equalToSuperview()
+        $0.centerX.equalToSuperview()
+        $0.height.equalTo(1)
+        $0.width.equalToSuperview().multipliedBy(0.9)
+      }
+    } else { // 친구랭킹
+      self.trashDataContainView.removeFromSuperview()
+      self.bottomSheetView.addSubview(self.stateContainView)
+      self.stateContainView.snp.makeConstraints {
+        $0.top.equalTo(handlerView.snp.bottom)
+        $0.leading.trailing.equalToSuperview()
+        $0.height.equalTo(73)
+      }
+      
+      self.userRankinContainerView.snp.makeConstraints {
+        $0.top.equalTo(stateContainView.snp.bottom)
+        $0.leading.trailing.equalToSuperview()
+        $0.bottom.equalToSuperview().inset(95)
+      }
+      
+      self.rankingTitleLabel.snp.makeConstraints {
+        $0.top.equalToSuperview().inset(10)
+        $0.leading.equalToSuperview().inset(27)
+      }
+      
+      self.viewMoreButton.snp.makeConstraints {
+        $0.trailing.equalToSuperview().inset(22)
+        $0.centerY.equalTo(rankingTitleLabel.snp.centerY)
+      }
+      
+      self.rankingProfileImageView.snp.makeConstraints {
+        $0.top.equalTo(rankingTitleLabel.snp.bottom).offset(10)
+        $0.leading.equalToSuperview().inset(27)
+      }
+      
+      self.rankingNameLabel.snp.makeConstraints {
+        $0.leading.equalTo(rankingProfileImageView.snp.trailing).offset(10)
+        $0.centerY.equalTo(rankingProfileImageView.snp.centerY).offset(-12)
+      }
+      
+      self.userHasPointLabel.snp.makeConstraints {
+        $0.leading.equalTo(rankingProfileImageView.snp.trailing).offset(10)
+        $0.centerY.equalTo(rankingProfileImageView.snp.centerY).offset(12)
+      }
+      
+      self.boundaryLineView.snp.makeConstraints {
+        $0.top.equalToSuperview()
+        $0.centerX.equalToSuperview()
+        $0.height.equalTo(1)
+        $0.width.equalToSuperview().multipliedBy(0.9)
+      }
+    }
+  }
+  
+  private func changeModeToTip() {
+    self.trashDataContainView.removeFromSuperview()
+    self.bottomSheetView.addSubview(self.stateContainView)
+    self.stateContainView.snp.makeConstraints {
+      $0.top.equalTo(handlerView.snp.bottom)
+      $0.leading.trailing.equalToSuperview()
+      $0.height.equalTo(103)
+    }
   }
   
   // Pin을 선택했을 때 DetailView에서 나타날 UI Setting
@@ -347,6 +604,20 @@ final class BottomSheetView: PassThroughView {
   
 }
 
+// MARK: - CLLocationManagerDelegate
+
+extension BottomSheetView: CLLocationManagerDelegate {
+  
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    guard let currentLocation = locations.last else { return }
+    
+    if selectedPinModel != nil {
+      distanceOfMeters = currentLocation.distance(from: CLLocation(latitude: selectedPinModel!.latitude, longitude: selectedPinModel!.longitude))
+    }
+  }
+  
+}
+
 //MARK: - LayoutSupport
 
 extension BottomSheetView: LayoutSupport {
@@ -359,14 +630,26 @@ extension BottomSheetView: LayoutSupport {
   func addSubviews() {
     self.addSubview(self.bottomSheetView)
 //    self.bottomSheetView.addSubview(proFileView)
-    //self.bottomSheetView.addSubview(handlerView)
+    self.bottomSheetView.addSubview(handlerView)
+    
     self.bottomSheetView.addSubview(stateContainView)
+   // self.stateContainView.addSubview(handlerView)
     self.stateContainView.addSubview(rankTierLabel)
     self.stateContainView.addSubview(userNickNameLabel)
     self.stateContainView.addSubview(nameHonorLabel)
     self.stateContainView.addSubview(pointUnitLabel)
     self.stateContainView.addSubview(pointLabel)
-    self.stateContainView.addSubview(handlerView)
+    
+    self.bottomSheetView.addSubview(userRankinContainerView)
+    self.userRankinContainerView.addSubview(rankingTitleLabel)
+    self.userRankinContainerView.addSubview(viewMoreButton)
+    self.userRankinContainerView.addSubview(rankingProfileImageView)
+    self.userRankinContainerView.addSubview(rankingNameLabel)
+    self.userRankinContainerView.addSubview(userHasPointLabel)
+    self.userRankinContainerView.addSubview(boundaryLineView)
+    print("addSubView boundaryLineView")
+//    self.bottomSheetView.addSubview(trashDataContainView)
+    
 //    self.bottomSheetView.addSubview(pinDetailContainView)
 //    
 //    self.proFileView.addSubview(proFileImageView)
@@ -408,12 +691,13 @@ extension BottomSheetView: SetupSubviewsConstraints {
     
     self.handlerView.snp.makeConstraints {
       $0.top.leading.trailing.equalTo(bottomSheetView)
-      $0.height.equalTo(28)
+      $0.height.equalTo(25)
     }
     
     self.stateContainView.snp.makeConstraints {
-      $0.top.leading.trailing.equalToSuperview()
-      $0.height.equalTo(100)
+      $0.top.equalTo(self.handlerView.snp.bottom)
+      $0.leading.trailing.equalToSuperview()
+      $0.height.equalTo(103)
     }
     //(0.77 * UIScreen.main.bounds.height) - 95
     // profile contraint
@@ -478,12 +762,12 @@ extension BottomSheetView: SetupSubviewsConstraints {
 //    }
  
     self.rankTierLabel.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(22)
+      $0.top.equalToSuperview()//.inset(22)
       $0.leading.equalToSuperview().inset(27)
     }
     
     self.userNickNameLabel.snp.makeConstraints {
-      $0.top.equalTo(rankTierLabel.snp.bottom).offset(7)
+      $0.top.equalTo(rankTierLabel.snp.bottom).offset(5)
       $0.leading.equalToSuperview().inset(25)
     }
     
@@ -501,6 +785,45 @@ extension BottomSheetView: SetupSubviewsConstraints {
       $0.trailing.equalTo(pointUnitLabel.snp.leading).offset(-3)
       $0.centerY.equalTo(userNickNameLabel.snp.centerY)
     }
+    
+    // UserRankingContainViewConstraints
+    self.userRankinContainerView.snp.makeConstraints {
+      $0.top.equalTo(stateContainView.snp.bottom)
+      $0.leading.trailing.equalToSuperview()
+      $0.bottom.equalToSuperview().inset(95)
+    }
+    
+    self.rankingTitleLabel.snp.makeConstraints {
+      $0.top.equalToSuperview().inset(10)
+      $0.leading.equalToSuperview().inset(27)
+    }
+    
+    self.viewMoreButton.snp.makeConstraints {
+      $0.trailing.equalToSuperview().inset(22)
+      $0.centerY.equalTo(rankingTitleLabel.snp.centerY)
+    }
+    
+    self.rankingProfileImageView.snp.makeConstraints {
+      $0.top.equalTo(rankingTitleLabel.snp.bottom).offset(10)
+      $0.leading.equalToSuperview().inset(27)
+    }
+    
+    self.rankingNameLabel.snp.makeConstraints {
+      $0.leading.equalTo(rankingProfileImageView.snp.trailing).offset(10)
+      $0.centerY.equalTo(rankingProfileImageView.snp.centerY).offset(-12)
+    }
+    
+    self.userHasPointLabel.snp.makeConstraints {
+      $0.leading.equalTo(rankingProfileImageView.snp.trailing).offset(10)
+      $0.centerY.equalTo(rankingProfileImageView.snp.centerY).offset(12)
+    }
+    
+    self.boundaryLineView.snp.makeConstraints {
+      $0.top.equalToSuperview()
+      $0.centerX.equalToSuperview()
+      $0.height.equalTo(1)
+      $0.width.equalToSuperview().multipliedBy(0.9)
+    }
+    
   }
-
 }
