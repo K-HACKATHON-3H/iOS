@@ -480,12 +480,14 @@ final class BottomSheetView: PassThroughView {
       // annotation을 선택한 상태
       self.stateContainView.removeFromSuperview()
       self.arButton.isHidden = false
+      self.boundaryLineView.isHidden = false
       self.bottomSheetView.addSubview(self.trashDataContainView)
       self.trashDataContainView.snp.makeConstraints {
         $0.top.equalTo(self.handlerView.snp.bottom)
         $0.leading.trailing.equalToSuperview()
         $0.height.equalTo(73) // stateContainView의 height 상수값
       }
+      self.rankingTitleLabel.text = "쓰레기통랭킹 1위"
       
       // 쓰레기통 랭킹
       self.userRankinContainerView.snp.makeConstraints {
@@ -536,6 +538,7 @@ final class BottomSheetView: PassThroughView {
     } else { // 친구랭킹
       self.trashDataContainView.removeFromSuperview()
       self.arButton.isHidden = true
+      self.boundaryLineView.isHidden = false
       self.bottomSheetView.addSubview(self.stateContainView)
       self.stateContainView.snp.makeConstraints {
         $0.top.equalTo(handlerView.snp.bottom)
@@ -543,6 +546,7 @@ final class BottomSheetView: PassThroughView {
         $0.height.equalTo(73)
       }
       
+      self.rankingTitleLabel.text = "친구랭킹 1위"
       self.userRankinContainerView.snp.makeConstraints {
         $0.top.equalTo(stateContainView.snp.bottom)
         $0.leading.trailing.equalToSuperview()
@@ -585,6 +589,7 @@ final class BottomSheetView: PassThroughView {
   
   private func changeModeToTip() {
     self.trashDataContainView.removeFromSuperview()
+    self.boundaryLineView.isHidden = true
     self.bottomSheetView.addSubview(self.stateContainView)
     self.stateContainView.snp.makeConstraints {
       $0.top.equalTo(handlerView.snp.bottom)

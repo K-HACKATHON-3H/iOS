@@ -28,7 +28,7 @@ class ARNaviViewController: UIViewController {
   let sceneLocationView = SceneLocationView()
   lazy var dismissButton: UIButton = {
     let button = UIButton()
-    button.setTitle("Dismiss", for: .normal)
+    button.setTitle("뒤로가기", for: .normal)
     button.backgroundColor = .black
     button.layer.cornerRadius = 5
     button.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
@@ -144,9 +144,9 @@ class ARNaviViewController: UIViewController {
     addSCNNode()
     configureSubviews()
     
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
-      self.coinJumpEffect()
-    }
+//    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
+//      self.coinJumpEffect()
+//    }
   }
   
   override func viewDidDisappear(_ animated: Bool) {
