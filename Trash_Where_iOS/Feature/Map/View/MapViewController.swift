@@ -326,15 +326,15 @@ extension MapViewController: MKMapViewDelegate {
   
   // annotation 클릭시 이 함수 호출
   func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
-    if annotation is MKUserLocation {
+    if !(annotation is TrashAnnotation) {
       return
     }
     
     mapView.removeMapViewOverlayOfLast()
-   // self.bottomSheetView.cancelPinButton.isHidden = false
     let selectedTrashPinModel = (mapView.selectedAnnotations.first as? TrashAnnotation)!.pinModel
     bottomSheetView.selectedPinModel = selectedTrashPinModel
     self.bottomSheetView.popUpBottomSheet()
+    self.bottomSheetView.TrashNameLabel.text = selectedTrashPinModel?.address
     
     var coordiCenterLa = annotation.coordinate.latitude
     let coordiCenterLo = annotation.coordinate.longitude
@@ -345,6 +345,8 @@ extension MapViewController: MKMapViewDelegate {
                                     latitudinalMeters: 450, longitudinalMeters: 450)
     mapView.setRegion(region, animated: true)
     calculateDirections(coordinate: annotation.coordinate)
+    
+    
   }
   
   func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {

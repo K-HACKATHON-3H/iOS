@@ -109,7 +109,7 @@ final class BottomSheetView: PassThroughView {
   }()
   let rankTierLabel: UILabel = {
     let label = UILabel()
-    label.text = "환경티어"
+    label.text = "새싹단계"
     label.font = UIFont(name: "Inter-Bold", size: 15)
     label.textColor = .systemGray
     return label
@@ -250,6 +250,7 @@ final class BottomSheetView: PassThroughView {
     let button = UIButton()
     button.setTitle("더 보기 〉", for: .normal)
     button.setTitleColor(.black, for: .normal)
+    button.titleLabel?.font = UIFont(name: "Inter-Bold", size: 16)
     return button
   }()
   let rankingProfileImageView: UIImageView = {
@@ -338,15 +339,18 @@ final class BottomSheetView: PassThroughView {
 //    view.backgroundColor = .clear
 //    return view
 //  }()
-//  lazy var arButton: UIButton = {
-//    let button = UIButton()
-//    button.setTitle("AR 길찾기", for: .normal)
-//    button.backgroundColor = .black
-//    button.layer.cornerRadius = 5
-//    button.isHidden = true
-//    button.addTarget(self, action: #selector(arButtonTapped), for: .touchUpInside)
-//    return button
-//  }()
+  lazy var arButton: UIButton = {
+    let button = UIButton()
+    button.setTitle("AR 길찾기", for: .normal)
+    button.titleLabel?.font = UIFont(name: "Inter-Bold", size: 16)
+    button.backgroundColor = customOrangeColor
+    button.layer.cornerRadius = 22
+    button.layer.shadowColor = UIColor.black.cgColor
+    button.layer.shadowOffset = CGSize(width: 0, height: 3)
+    button.layer.shadowOpacity = 0.3
+    button.addTarget(self, action: #selector(arButtonTapped), for: .touchUpInside)
+    return button
+  }()
 //  let trashImageView: UIImageView = {
 //    let imageView = UIImageView()
 //    imageView.image = UIImage(systemName: "trash.fill")
@@ -374,8 +378,6 @@ final class BottomSheetView: PassThroughView {
     
     self.backgroundColor = .clear
     
-    
-   
     self.bottomSheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     self.bottomSheetView.layer.cornerRadius = Const.cornerRadius
     self.bottomSheetView.layer.shadowColor = UIColor.black.cgColor
@@ -473,10 +475,11 @@ final class BottomSheetView: PassThroughView {
   
   private func changeModeToFull() {
     // TODO: Constraints Code 리팩토링 시급
-    if !mapView.selectedAnnotations.isEmpty {
+    if !mapView.selectedAnnotations.isEmpty && selectedPinModel != nil {
       // TODO: - MKUserLocation인경우 Data를 못받아 올 수 있음
       // annotation을 선택한 상태
       self.stateContainView.removeFromSuperview()
+      self.arButton.isHidden = false
       self.bottomSheetView.addSubview(self.trashDataContainView)
       self.trashDataContainView.snp.makeConstraints {
         $0.top.equalTo(self.handlerView.snp.bottom)
@@ -522,8 +525,17 @@ final class BottomSheetView: PassThroughView {
         $0.height.equalTo(1)
         $0.width.equalToSuperview().multipliedBy(0.9)
       }
+      
+      self.arButton.snp.makeConstraints {
+        $0.trailing.equalToSuperview().inset(22)
+        $0.centerY.equalTo(rankingProfileImageView.snp.centerY)
+        $0.height.equalTo(45)
+        $0.width.equalTo(116)
+      }
+      
     } else { // 친구랭킹
       self.trashDataContainView.removeFromSuperview()
+      self.arButton.isHidden = true
       self.bottomSheetView.addSubview(self.stateContainView)
       self.stateContainView.snp.makeConstraints {
         $0.top.equalTo(handlerView.snp.bottom)
@@ -647,6 +659,7 @@ extension BottomSheetView: LayoutSupport {
     self.userRankinContainerView.addSubview(rankingNameLabel)
     self.userRankinContainerView.addSubview(userHasPointLabel)
     self.userRankinContainerView.addSubview(boundaryLineView)
+    self.userRankinContainerView.addSubview(arButton)
     print("addSubView boundaryLineView")
 //    self.bottomSheetView.addSubview(trashDataContainView)
     
