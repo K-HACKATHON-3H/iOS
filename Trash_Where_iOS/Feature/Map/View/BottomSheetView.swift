@@ -177,12 +177,6 @@ final class BottomSheetView: PassThroughView {
       $0.trailing.equalToSuperview().inset(22)
       $0.centerY.equalTo(TrashNameLabel.snp.centerY)
     }
-//      self.boundaryLineView.snp.makeConstraints {
-//        $0.bottom.equalToSuperview()
-//        $0.centerX.equalToSuperview()
-//        $0.height.equalTo(1)
-//        $0.width.equalTo(self.bottomSheetView.layer.frame.width * 0.9)
-//      } // 사라질 예정
     
     return view
   }()
@@ -262,83 +256,17 @@ final class BottomSheetView: PassThroughView {
     let label = UILabel()
     label.text = "추성호"
     label.font = UIFont(name: "Inter-Bold", size: 18)
+    label.textColor = .black
     return label
   }()
   let userHasPointLabel: UILabel = {
     let label = UILabel()
     label.text = "56 P"
     label.font = UIFont(name: "Inter-Bold", size: 14)
+    label.textColor = .black
     return label
   }()
   
-  
-  
-//  let cancelPinButton: UIButton = {
-//    let button = UIButton()
-//    let cancelImageView = UIImageView(image: UIImage(systemName: "xmark"))
-//    button.backgroundColor = .white
-//    button.layer.cornerRadius = 15
-//    button.layer.shadowColor = UIColor.black.cgColor
-//    button.layer.shadowOffset = CGSize(width: 0, height: 2)
-//    button.layer.shadowOpacity = 0.5
-//    button.layer.shadowRadius = 3
-//    button.isHidden = true
-//    button.addSubview(cancelImageView)
-//    cancelImageView.snp.makeConstraints {
-//      $0.centerX.centerY.equalToSuperview()
-//    }
-//    cancelImageView.tintColor = .black
-//    return button
-//  }()
-  
-  // proFileView
-//  let proFileView: UIView = {
-//    let view = UIView()
-//    view.backgroundColor = .darkGray
-//    view.layer.cornerRadius = 15
-//    return view
-//  }()
-//  lazy var proFileImageView: UIImageView = {
-//    let imageView = UIImageView(image: userProfileModel.Image)
-//    imageView.clipsToBounds = true
-//    imageView.layer.cornerRadius = 30
-//    return imageView
-//  }()
-//  lazy var profileNameLabel: UILabel = {
-//    let label = UILabel()
-//    label.text = userProfileModel.name
-//    label.font = UIFont.boldSystemFont(ofSize: 20)
-//    label.textColor = .white
-//    return label
-//  }()
-  
-  // 몰?루
-//  let todaysPointView: UIView = {
-//    let view = UIView()
-//    view.layer.borderColor = UIColor.white.cgColor
-//    view.layer.borderWidth = 2
-//    view.layer.cornerRadius = 5
-//    return view
-//  }()
-  
-//  let profilePointLabel: UILabel = {
-//    let label = UILabel()
-//    label.text = "2500P"
-//    label.textColor = .white
-//    label.font = .boldSystemFont(ofSize: 15)
-//    return label
-//  }()
-  
-  // pinDetailView
-//  let pinDetailContainView: UIView = {
-//    let view = UIView()
-//    return view
-//  }()
-//  let pinDetailView: UIView = {
-//    let view = UIView()
-//    view.backgroundColor = .clear
-//    return view
-//  }()
   lazy var arButton: UIButton = {
     let button = UIButton()
     button.setTitle("AR 길찾기", for: .normal)
@@ -351,25 +279,6 @@ final class BottomSheetView: PassThroughView {
     button.addTarget(self, action: #selector(arButtonTapped), for: .touchUpInside)
     return button
   }()
-//  let trashImageView: UIImageView = {
-//    let imageView = UIImageView()
-//    imageView.image = UIImage(systemName: "trash.fill")
-//    return imageView
-//  }()
-//  lazy var trashAddressLabel:UILabel = {
-//    let label = UILabel()
-//    label.text = "대한민국 대전광역시 동구 효동 148-9"
-//    label.textColor = .black
-//    return label
-//  }()
-//  lazy var trashDistanceLabel: UILabel = {
-//    let label = UILabel()
-//    label.text = "\(trashDistance)m"
-//    label.font = .boldSystemFont(ofSize: 20)
-//    label.textColor = .black
-//    return label
-//  }()
-
   
   // MARK: - Initializer
   
@@ -598,27 +507,6 @@ final class BottomSheetView: PassThroughView {
     }
   }
   
-  // Pin을 선택했을 때 DetailView에서 나타날 UI Setting
-//  private func showDetailView() {
-//    if !mapView.selectedAnnotations.isEmpty {
-//      //arButton.isHidden = false
-//      //pinDetailView.addSubview(arButton)
-//      arButton.snp.makeConstraints {
-//        $0.top.equalToSuperview().offset(15)
-//        $0.trailing.equalToSuperview().inset(20)
-//        $0.leading.equalTo(trashAddressLabel.snp.trailing).offset(5)
-//        $0.height.equalTo(50)
-//        $0.width.equalTo(90)
-//      }
-//    } else {
-//      print("no selectPin")
-//    }
-//  }
-  
-//  func hiddenDetailView() {
-//    arButton.removeFromSuperview()
-//  }
-  
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -646,11 +534,9 @@ extension BottomSheetView: LayoutSupport {
 
   func addSubviews() {
     self.addSubview(self.bottomSheetView)
-//    self.bottomSheetView.addSubview(proFileView)
     self.bottomSheetView.addSubview(handlerView)
     
     self.bottomSheetView.addSubview(stateContainView)
-   // self.stateContainView.addSubview(handlerView)
     self.stateContainView.addSubview(rankTierLabel)
     self.stateContainView.addSubview(userNickNameLabel)
     self.stateContainView.addSubview(nameHonorLabel)
@@ -665,21 +551,6 @@ extension BottomSheetView: LayoutSupport {
     self.userRankinContainerView.addSubview(userHasPointLabel)
     self.userRankinContainerView.addSubview(boundaryLineView)
     self.userRankinContainerView.addSubview(arButton)
-    print("addSubView boundaryLineView")
-//    self.bottomSheetView.addSubview(trashDataContainView)
-    
-//    self.bottomSheetView.addSubview(pinDetailContainView)
-//    
-//    self.proFileView.addSubview(proFileImageView)
-//    self.proFileView.addSubview(profileNameLabel)
-//    //self.proFileView.addSubview(todaysPointView)
-//    self.proFileView.addSubview(cancelPinButton)
-//    self.proFileView.addSubview(profilePointLabel)
-//    
-//    self.pinDetailContainView.addSubview(pinDetailView)
-//    self.pinDetailView.addSubview(trashImageView)
-//    self.pinDetailView.addSubview(trashAddressLabel)
-//    self.pinDetailView.addSubview(trashDistanceLabel)
     
     self.handlerView.addSubview(self.barView)
   }
@@ -717,67 +588,6 @@ extension BottomSheetView: SetupSubviewsConstraints {
       $0.leading.trailing.equalToSuperview()
       $0.height.equalTo(103)
     }
-    //(0.77 * UIScreen.main.bounds.height) - 95
-    // profile contraint
-//    self.cancelPinButton.snp.makeConstraints {
-//      $0.top.trailing.equalTo(proFileView).inset(8)
-//      $0.height.width.equalTo(30)
-//    }
-//    
-//    self.proFileView.snp.makeConstraints {
-//      $0.top.leading.trailing.equalToSuperview().inset(15)
-//      $0.height.equalTo(UIScreen.main.bounds.height / 9)
-//    }
-//    
-//    self.proFileImageView.snp.makeConstraints {
-//      $0.centerY.equalToSuperview()
-//      $0.leading.equalToSuperview().offset(20)
-//      $0.height.width.equalTo(60)
-//    }
-//    
-//    self.profileNameLabel.snp.makeConstraints {
-//      $0.top.equalToSuperview().offset(18)
-//      $0.leading.equalTo(proFileImageView.snp.trailing).offset(10)
-//    }
-    
-//    self.todaysPointView.snp.makeConstraints {
-//      $0.top.equalTo(profileNameLabel.snp.bottom).offset(7)
-//      $0.leading.equalTo(proFileImageView.snp.trailing).offset(10)
-//      $0.height.equalTo(30)
-//      $0.width.equalTo(200)
-//    }
-    
-//    self.profilePointLabel.snp.makeConstraints {
-//      $0.centerY.equalTo(profileNameLabel.snp.centerY).offset(3)
-//      $0.leading.equalTo(profileNameLabel.snp.trailing).offset(10)
-//    }
-//    
-//    self.pinDetailContainView.snp.makeConstraints {
-//      $0.top.equalTo(proFileView.snp.bottom)
-//      $0.leading.trailing.equalToSuperview()
-//      $0.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
-//    }
-//    
-//    self.pinDetailView.snp.makeConstraints {
-//      $0.top.leading.trailing.equalToSuperview()
-//      $0.height.equalTo(70)
-//    }
-//    
-//    self.trashImageView.snp.makeConstraints {
-//      $0.top.equalToSuperview().offset(15)
-//      $0.leading.equalToSuperview().offset(35)
-//      $0.height.width.equalTo(50)
-//    }
-//    
-//    self.trashAddressLabel.snp.makeConstraints {
-//      $0.top.equalToSuperview().offset(20)
-//      $0.leading.equalTo(trashImageView.snp.trailing).offset(10)
-//    }
-//    
-//    self.trashDistanceLabel.snp.makeConstraints {
-//      $0.leading.equalTo(trashImageView.snp.trailing).offset(10)
-//      $0.top.equalTo(trashAddressLabel.snp.bottom).offset(1)
-//    }
  
     self.rankTierLabel.snp.makeConstraints {
       $0.top.equalToSuperview()//.inset(22)
