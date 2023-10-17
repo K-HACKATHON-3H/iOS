@@ -28,7 +28,7 @@ class ARNaviViewController: UIViewController {
   let sceneLocationView = SceneLocationView()
   lazy var dismissButton: UIButton = {
     let button = UIButton()
-    button.setTitle("Dismiss", for: .normal)
+    button.setTitle("뒤로가기", for: .normal)
     button.backgroundColor = .black
     button.layer.cornerRadius = 5
     button.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
@@ -55,13 +55,13 @@ class ARNaviViewController: UIViewController {
   // MARK: AR UI
   var pinLocationNode: LocationNode!
   var pinNode: SCNNode = {
-    let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/Pointers.scn")!
-    let pinNode = pinScene.rootNode.childNode(withName: "C3_002", recursively: true)
-    pinNode!.scale = SCNVector3(x: 25, y: 25, z: 25)
+    let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/TrashWherePin.scn")!
+    let pinNode = pinScene.rootNode.childNode(withName: "Pin", recursively: true)
+    pinNode!.scale = SCNVector3(x: 0.05, y: 0.05, z: 0.05)
     pinNode!.position = SCNVector3(x: 0, y: 1, z: 0) // *
     
     let material = SCNMaterial()
-    material.diffuse.contents = UIColor.red
+    material.diffuse.contents = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
     material.specular.contents = UIColor.white
     material.shininess = 50.0
     
@@ -93,16 +93,16 @@ class ARNaviViewController: UIViewController {
     
     let light = SCNLight()
     light.type = .IES
-    light.intensity = 3000
+    light.intensity = 4000
 
     let lightFrontNode = SCNNode()
     lightFrontNode.light = light
-    lightFrontNode.position = SCNVector3(x: -100, y: 100, z: -100)
+    lightFrontNode.position = SCNVector3(x: -10, y: 10, z: -10)
     lightFrontNode.castsShadow = true
     
     let lightBackNode = SCNNode()
     lightBackNode.light = light
-    lightBackNode.position = SCNVector3(x: 100, y: 100, z: 100)
+    lightBackNode.position = SCNVector3(x: 10, y: 10, z: 10)
     lightBackNode.castsShadow = true
     
     //animation
@@ -123,7 +123,7 @@ class ARNaviViewController: UIViewController {
     let node = SCNNode()
     let cylinderGeometry = SCNCylinder(radius: 15, height: 0.5)
     let transparentMaterial = SCNMaterial()
-    transparentMaterial.diffuse.contents = UIColor.green
+    transparentMaterial.diffuse.contents = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1)) //UIColor.green
     transparentMaterial.transparency = 0.5
     cylinderGeometry.materials = [transparentMaterial]
     node.geometry = cylinderGeometry
@@ -144,9 +144,9 @@ class ARNaviViewController: UIViewController {
     addSCNNode()
     configureSubviews()
     
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
-      self.coinJumpEffect()
-    }
+//    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 5.0) {
+//      self.coinJumpEffect()
+//    }
   }
   
   override func viewDidDisappear(_ animated: Bool) {
