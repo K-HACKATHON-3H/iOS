@@ -59,14 +59,19 @@ final class MapViewController: UIViewController {
   // Sample Data
   var pinModels = [
     PinModel(address: "대전 동구 천동 대전로 0번길", latitude: 36.3167000, longitude: 127.4435000),
-    PinModel(address: "대전 동구 천동 대전로 1번길", latitude: 36.3178000, longitude: 127.4419000),
     PinModel(address: "대전 동구 천동 대전로 542번길", latitude: 36.3167000, longitude: 127.4400000),
     PinModel(address: "대전 동구 천동 대전로 3번길", latitude: 36.3141000, longitude: 127.4455000),
     PinModel(address: "대전 동구 천동 대전로 4번길", latitude: 36.3198000, longitude: 127.4482000),
     PinModel(address: "대전 동구 천동 대전로 5번길", latitude: 36.3164000, longitude: 127.4411000),
     PinModel(address: "대전 동구 용운동 대학로 1번길", latitude: 36.3346000, longitude: 127.4556000),
-    PinModel(address: "대전 동구 용운동 대학로 2번길", latitude: 36.3338000, longitude: 127.4571000),
     PinModel(address: "대전 동구 용운동 대학로 3번길", latitude: 36.3368000, longitude: 127.4567000)]
+  
+  var storeModel = [
+    PinModel(address: "GS25 대전효동현대점", latitude: 36.3179000, longitude: 127.4420000),
+    PinModel(address: "세븐일레븐 대전천동점", latitude: 36.3160000, longitude: 127.4470000),
+    PinModel(address: "CU 대전인동현대점", latitude: 36.3200000, longitude: 127.4388000),
+    PinModel(address: "GS25 판암중앙점", latitude: 36.3217000, longitude: 127.4496000),
+    PinModel(address: "GS25 용운샛별점", latitude: 36.3338, longitude: 127.4571)]
   
   // MARK: - LifeCycle
   
@@ -88,6 +93,10 @@ final class MapViewController: UIViewController {
   func addTrashAnnotation() {
     _=pinModels.map {
       mapView.addAnnotation(TrashAnnotation(pinModel: $0,imageType: 0))
+    }
+    
+    _=storeModel.map {
+      mapView.addAnnotation(TrashAnnotation(pinModel: $0, imageType: 1))
     }
   }
   
@@ -162,12 +171,12 @@ final class MapViewController: UIViewController {
       }
       
       //DebugCode
-      self?.guidePointLocations.map {
-        print($0)
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = $0
-        self?.mapView.addAnnotation(annotation)
-      }
+//      self?.guidePointLocations.map {
+//        print($0)
+//        let annotation = MKPointAnnotation()
+//        annotation.coordinate = $0
+//        self?.mapView.addAnnotation(annotation)
+//      }
     }
   }
   
@@ -279,12 +288,10 @@ extension MapViewController: MKMapViewDelegate {
     if annotation is MKUserLocation {
       let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
       annotationView.image = UIImage(named: "userLocationIcon")
-     // annotationView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.63)
       annotationView.layer.shadowColor = UIColor.orange.cgColor
       annotationView.layer.shadowOffset = CGSize(width: 1, height: 1)
       annotationView.layer.shadowOpacity = 0.5
       annotationView.layer.shadowRadius = 5
-      //annotationView.transform = CGAffineTransform(rotationAngle: )
       // ios 16 이상부터는 layer없이 바로 anchorpoint를 설정할 수 있음!
       return annotationView
     }
@@ -309,11 +316,11 @@ extension MapViewController: MKMapViewDelegate {
     let size = CGSize(width: 40, height: 40)
     UIGraphicsBeginImageContext(size)
     
-    // annotation.imageType 값에 따라서 image setting
     switch annotation.imageType {
     case 0:
       annotationImage = UIImage(named: "TrashPin")
-      //annotationView?.centerOffset = CGPoint(x: 0, y: -15)
+    case 1:
+      annotationImage = UIImage(named: "StorePin")
     default:
       annotationImage = UIImage(systemName: "trash.circle")
     }
