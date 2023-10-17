@@ -236,15 +236,15 @@ final class BottomSheetView: PassThroughView {
   let rankingTitleLabel: UILabel = {
     let label = UILabel()
     label.text = "1위 정보"
-    label.font = UIFont(name: "Inter-Bold", size: 16)
+    label.font = UIFont(name: "Inter-Bold", size: 14)
     label.textColor = .black
     return label
   }()
   let viewMoreButton: UIButton = {
     let button = UIButton()
-    button.setTitle("더 보기 〉", for: .normal)
+    button.setTitle("더 보기  〉", for: .normal)
     button.setTitleColor(.black, for: .normal)
-    button.titleLabel?.font = UIFont(name: "Inter-Bold", size: 16)
+    button.titleLabel?.font = UIFont(name: "Inter-Bold", size: 14)
     return button
   }()
   let rankingProfileImageView: UIImageView = {
