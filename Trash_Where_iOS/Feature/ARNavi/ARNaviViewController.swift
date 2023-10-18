@@ -55,10 +55,10 @@ class ARNaviViewController: UIViewController {
   // MARK: AR UI
   var pinLocationNode: LocationNode!
   var pinNode: SCNNode = {
-    let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/TrashWherePin.scn")!
-    let pinNode = pinScene.rootNode.childNode(withName: "Pin", recursively: true)
-    pinNode!.scale = SCNVector3(x: 0.05, y: 0.05, z: 0.05)
-    pinNode!.position = SCNVector3(x: 0, y: 1, z: 0) // *
+    let pinScene = SCNScene(named: "SceneKit_Assets.scnassets/TrashPin.scn")!
+    let pinNode = pinScene.rootNode.childNode(withName: "TrashPin", recursively: true)
+    pinNode!.scale = SCNVector3(x: 0.03, y: 0.03, z: 0.03)
+    pinNode!.position = SCNVector3(x: 0, y: -5, z: 0) // *
     
     let material = SCNMaterial()
     material.diffuse.contents = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1))
@@ -67,20 +67,32 @@ class ARNaviViewController: UIViewController {
     
     let light = SCNLight()
     light.type = .IES
-    light.intensity = 2000
+    light.intensity = 3000
 
     let lightFrontNode = SCNNode()
     lightFrontNode.light = light
-    lightFrontNode.position = SCNVector3(x: -100, y: 100, z: -100)
+    lightFrontNode.position = SCNVector3(x: -10, y: 10, z: -10)
     lightFrontNode.castsShadow = true
     
     let lightBackNode = SCNNode()
     lightBackNode.light = light
-    lightBackNode.position = SCNVector3(x: 100, y: 100, z: 100)
+    lightBackNode.position = SCNVector3(x: 10, y: 10, z: 10)
     lightBackNode.castsShadow = true
 
+    let light1Node = SCNNode()
+    light1Node.light = light
+    light1Node.position = SCNVector3(x: -10, y: 10, z: 10)
+    light1Node.castsShadow = true
+    
+    let light2Node = SCNNode()
+    light2Node.light = light
+    light2Node.position = SCNVector3(x: 10, y: 10, z: -10)
+    light2Node.castsShadow = true
+    
     pinNode?.addChildNode(lightFrontNode)
     pinNode?.addChildNode(lightBackNode)
+    pinNode?.addChildNode(light1Node)
+    pinNode?.addChildNode(light2Node)
     pinNode?.geometry?.materials = [material]
     return pinNode!
   }()
@@ -121,6 +133,7 @@ class ARNaviViewController: UIViewController {
   }()
   var spotNode: SCNNode = {
     let node = SCNNode()
+    node.position = SCNVector3(x: 0, y: 10, z: 0)
     let cylinderGeometry = SCNCylinder(radius: 15, height: 0.5)
     let transparentMaterial = SCNMaterial()
     transparentMaterial.diffuse.contents = UIColor(cgColor: CGColor(red: 243/255, green: 166/255, blue: 88/255, alpha: 1)) //UIColor.green
@@ -163,14 +176,14 @@ class ARNaviViewController: UIViewController {
     // pinNode
     let targetCoordinate = CLLocationCoordinate2D(
       latitude: arPinModel.latitude, longitude: arPinModel.longitude)
-    let pinLocation = CLLocation(coordinate: targetCoordinate, altitude: 60)
+    let pinLocation = CLLocation(coordinate: targetCoordinate, altitude: 52)
     pinLocationNode = LocationNode(location: pinLocation)
     pinLocationNode.addChildNode(pinNode)
     sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: pinLocationNode)
     
     if !coinLocations.isEmpty {
       spotNode.addChildNode(coinNode)
-      let guidPointLocation = CLLocation(coordinate: coinLocations[0], altitude: 60)
+      let guidPointLocation = CLLocation(coordinate: coinLocations[0], altitude: 45)
       coinLocationNode = LocationNode(location: guidPointLocation)
       coinLocationNode!.addChildNode(spotNode)
       sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: coinLocationNode!)
@@ -225,7 +238,7 @@ extension ARNaviViewController: PinElevationAPIDelegate {
           if $0.pinID == self.arPinModel.pinID {
             let updateAltitude: CLLocationDistance = $0.elevation
             if let currentLocation = self.pinLocationNode.location {
-              let newLocation = CLLocation(coordinate: currentLocation.coordinate, altitude: updateAltitude)
+              let newLocation = CLLocation(coordinate: currentLocation.coordinate, altitude: updateAltitude - 5)
               self.pinLocationNode.location = newLocation
             }
           }
@@ -235,7 +248,7 @@ extension ARNaviViewController: PinElevationAPIDelegate {
           if $0.pinID == self.currentCoinModel.pinID {
             let updateAltitude: CLLocationDistance = $0.elevation
             if let currentLocation = self.coinLocationNode!.location {
-              let newLocation = CLLocation(coordinate: currentLocation.coordinate, altitude: updateAltitude)
+              let newLocation = CLLocation(coordinate: currentLocation.coordinate, altitude: updateAltitude - 5)
               self.coinLocationNode!.location = newLocation
             }
           }
@@ -280,7 +293,7 @@ extension ARNaviViewController: CLLocationManagerDelegate {
       let coinLongitude = coinLocations[coinIndex].longitude
       let distanceInCoinNodeOfMeters = currentLocation.distance(from: CLLocation(latitude: coinLatitude, longitude: coinLongitude))
       
-      if distanceInCoinNodeOfMeters < 25 { // 코인 획득!!
+      if distanceInCoinNodeOfMeters < 20 { // 코인 획득!!
         coinIndex += 1
         // TODO: Point 리워드 지급
         self.coinJumpEffect()

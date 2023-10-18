@@ -188,7 +188,8 @@ final class BottomSheetView: PassThroughView {
   }()
   lazy var distanceLabel: UILabel = {
     let label = UILabel()
-    label.text = "92"//"\(self.distanceOfMeters)"
+    label.text = "94"
+    //"\(self.distanceOfMeters)"
     label.font = UIFont(name: "Inter-Bold", size: 15)
     label.textColor = .gray//UIColor(cgColor: CGColor(red: 147, green: 145, blue: 145, alpha: 1))
     return label
@@ -254,7 +255,7 @@ final class BottomSheetView: PassThroughView {
   }()
   let rankingNameLabel: UILabel = {
     let label = UILabel()
-    label.text = "추성호"
+    label.text = "이치훈"
     label.font = UIFont(name: "Inter-Bold", size: 18)
     label.textColor = .black
     return label
